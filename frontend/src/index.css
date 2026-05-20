@@ -1,0 +1,107 @@
+:root {
+  --bg-void: #020408;
+  --bg-dark: #050c14;
+  --bg-panel: #081018;
+  --bg-card: #0a1520;
+  --bg-elevated: #0e1e2e;
+
+  --accent-cyan: #00e5ff;
+  --accent-green: #00ff87;
+  --accent-amber: #ffb300;
+  --accent-red: #ff1744;
+  --accent-orange: #ff6d00;
+
+  --danger-low: #00ff87;
+  --danger-medium: #ffb300;
+  --danger-high: #ff6d00;
+  --danger-critical: #ff1744;
+
+  --text-primary: #e8f4ff;
+  --text-secondary: #7a9bb5;
+  --text-muted: #3a5268;
+
+  --border-dim: rgba(0, 229, 255, 0.08);
+  --border-glow: rgba(0, 229, 255, 0.3);
+
+  --font-display: 'Orbitron', monospace;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --glow-cyan: 0 0 20px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.1);
+  --glow-green: 0 0 20px rgba(0, 255, 135, 0.4), 0 0 60px rgba(0, 255, 135, 0.1);
+  --glow-red: 0 0 20px rgba(255, 23, 68, 0.5), 0 0 60px rgba(255, 23, 68, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 2px; }
+
+/* Animations */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes danger-flash {
+  0%, 100% { border-color: rgba(255, 23, 68, 0.3); box-shadow: none; }
+  50% { border-color: rgba(255, 23, 68, 0.9); box-shadow: var(--glow-red); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes grid-move {
+  from { background-position: 0 0; }
+  to { background-position: 40px 40px; }
+}
+
+@keyframes radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
