@@ -1,0 +1,443 @@
+% Chương 1
+
+\chapter{MỞ ĐẦU - GIỚI THIỆU CHUNG} % Tên của chương
+
+\label{Chapter1} % Để trích dẫn chương này ở chỗ nào đó trong bài, hãy sử dụng lệnh \ref{Chapter1} 
+
+%----------------------------------------------------------------------------------------
+
+% Định nghĩa một số lệnh cần thiết để điều chỉnh định dạng cho một số nội dung nhất định trong bài
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+%----------------------------------------------------------------------------------------
+
+\section{Lời mở đầu}
+
+Chào mừng bạn đến với template \LaTeX{} khóa luận tốt nghiệp/tiểu luận của Bộ môn Tin học Vật lý. Đây là một template đẹp và dễ sử dụng cho việc biên soạn khóa luận tốt nghiệp/tiểu luận sử dụng hệ thống gõ \LaTeX{}.
+
+Nếu bạn đang hoặc sẽ biên soạn khóa luận tốt nghiệp/tiểu luận và chủ đề liên quan đến kĩ thuật hoặc toán học thì việc biên soạn trên \LaTeX{} là rất đáng cân nhắc vì đây là cách giúp bạn có thể ngồi xuống và tập trung vào nội dung viết cốt lõi mà không cần lo lắng về mặt định dạng (format) cũng như lãng phí thời gian vào việc tinh chỉnh phần mềm soạn thảo văn bản.
+
+\LaTeX{} có thể dễ dàng biên soạn các tài liệu một cách chuyên nghiệp mà lên tới hàng trăm hoặc hàng nghìn trang. Với câu lệnh đơn giản, nó tự động sắp đặt mục lục, lề, tiêu đề/chân trang, và giữ cho định dạng thống nhất và đẹp đẽ. Một trong những thế mạnh chính của \LaTeX{} là việc gõ các công thức toán học, thậm chí các công thức \emph{rất phức tạp}. Ngay cả khi những phương trình này là những vấn đề phức tạp và khó khăn nhất mà chỉ có thể được giải được bằng siêu máy tính, bạn có thể yên tâm là ít nhất \LaTeX{} sẽ làm cho chúng trông \emph{lộng lẫy}.
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Học \LaTeX{}}
+
+\LaTeX{} không phải một chương trình \textsc{wysiwyg} (What You See is What You Get, tạm dịch: \textit{Giao diện tương tác tức thời - mắt thấy tay làm}), không giống các trình soạn thảo văn bản như Microsoft Word hoặc Pages của Apple. Một văn bản được viết cho \LaTeX{} chỉ đơn thuần là một file (tập tin) văn bản đơn giản \emph{không có định dạng}. Bạn nói với \LaTeX{} cách bạn muốn văn bản định dạng bằng cách viết những dòng lệnh đơn giản trong văn bản, ví dụ, nếu bạn muốn sử dụng \emph{chữ in nghiêng (italic)}, bạn viết lệnh \verb|\emph{nội dung}| và đưa nội dung bạn muốn in nghiêng vào trong dấu ngoặc nhọn. Điều này có nghĩa rằng \LaTeX{} là một ngôn ngữ lập trình \enquote{đánh dấu (mark-up)}, tương tự như HTML.
+
+
+\subsection{Một tài liệu ngắn gọn giới thiệu về \LaTeX{}}
+
+Nếu bạn mới tiếp cận với \LaTeX{} thì có một cuốn sách rất đáng tham khảo -- file PDF miễn phí có sẵn trên mạng -- tên là, \enquote{The Not So Short Introduction to \LaTeX{}}. Tiêu đề cuốn sách được rút gọn thành chỉ còn \emph{lshort}. Bạn có thể download bản mới nhất tại đây:
+\url{http://www.ctan.org/tex-archive/info/lshort/english/lshort.pdf}
+
+Cuốn sách được viết bằng một số ngôn ngữ. Trong đó bản tiếng Việt tại đây:
+\url{https://mirror.kku.ac.th/CTAN/info/lshort/vietnamese/lshort-vi.pdf}
+
+Bạn nên dành ra một chút thời gian để học cách sử dụng \LaTeX{} bằng cách tạo một vài văn bản `test' nho nhỏ, hoặc ngó qua một vài templates tại:\\
+\url{http://www.LaTeXTemplates.com}\\
+Bỏ ra một chút công sức ngay lúc này giúp bạn sẽ không phải chật vật học một hệ thống khi những gì bạn thực sự cần làm là tập trung viết nội dung.
+
+
+\subsection{Hướng dẫn ngắn về công thức toán học trong \LaTeX{}}
+
+Nếu bạn đang biên soạn khóa luận tốt nghiệp/tiểu luận có chủ đề liên quan đến kĩ thuật hoặc toán học thì có thể bạn sẽ muốn đọc tài liệu bới AMS (American Mathematical Society, tạm dịch: Hiệp hội toán học Mĩ), \enquote{A Short Math Guide for \LaTeX{}}. Bạn có thể download tại đây:
+\url{http://www.ams.org/tex/amslatex.html}
+dưới mục \enquote{Additional Documentation} ở cuối trang web, phần \enquote{Short Math Guide for \LaTeX{}}.
+
+
+\subsection{Các ký hiệu toán học phổ biến trong \LaTeX{}}
+
+Có vô số các ký hiệu toán học có sẵn trên \LaTeX{} và bạn sẽ phải nỗ lực rất nhiều để tìm hiểu tất cả các lệnh cho chúng. Thay vào đó, bạn có thể tra cứu những ký hiệu toán học phổ biến nhất tại đây:\\
+\url{http://www.sunilpatel.co.uk/latex-type/latex-math-symbols/}
+
+Bạn có thể sử dụng trang này như một bảng tra cứu. Những ký hiệu được làm to, hình ảnh sắc nét nên bạn có thể nhanh chóng tìm thấy câu lệnh \LaTeX{} cho ký hiệu cần dùng.
+
+
+\subsection{\LaTeX{} trên máy tính Mac}
+
+Bản phân phối \LaTeX{} có sẵn cho nhiều hệ thống bao gồm Windows, Linux và Mac OS X. Gói dành cho OS X được gọi là MacTeX và nó chứa tất cả các ứng dụng bạn cần -- được đóng gói cùng nhau và tùy chỉnh trước -- cho một môi trường \LaTeX{} và luồng công việc hoạt động đầy đủ.
+
+MacTeX bao gồm một trình soạn thảo \LaTeX{} chuyên dụng tùy chỉnh được gọi là TeXShop để viết các file `\file{.tex}' của bạn và BibDesk: một chương trình để quản lý các tài liệu tham khảo và tạo phần danh mục trích dẫn của bạn dễ dàng như quản lý bài hát và tạo danh sách phát trong iTunes.
+
+
+\subsection{\LaTeX{} trên Linux}
+Đối với máy tính sử dụng hệ điều hành Linux, gói phổ biến dành cho hệ điều hành này là \code{texlive} (dành cho Debian hoặc Ubuntu) và \code{tetex} (dành cho RedHat hoặc CentOS). Tương tự như trình biên dịch \code{gcc} cho ngôn ngữ lập trình C, \code{texlive} và \code{tetex} là một trình biên dịch đóng vai trò biên dịch \LaTeX{}. Bạn hoàn toàn có thể dùng bất kì trình soạn thảo nào có sẵn trên máy để biên soạn \LaTeX{} tuy nhiên một trình soạn thảo \LaTeX{} chuyên dụng (chẳng hạn như \href{https://www.texstudio.org}{\code{texstudio}}) sẽ giúp bạn tiết kiệm phần lớn thời gian và công sức.
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Bắt đầu với template này}
+
+Nếu bạn đã quen thuộc với \LaTeX{} thì bạn nên tìm hiểu cấu trúc thư mục của template và sau đó thay thế thông tin cá nhân của mình trong phần \emph{THÔNG TIN VỀ Khóa luận tốt nghiệp/Tiểu luận} trong file \file{main.tex}. Bạn có thể chỉnh sửa phần còn lại của file này tùy theo bậc học/trường đại học của bạn. Mục \ref{FillingFile} ở trang \pageref{FillingFile} sẽ giúp bạn làm điều này. Hãy đảm bảo rằng bạn đọc mục \ref{ThesisConventions} về quy định của khóa luận để có thể sử dụng template này một cách tốt nhất.
+
+Nếu bạn mới tiếp cận với \LaTeX{} thì bạn nên đọc hết phần thông tin còn lại trong tài liệu này.
+
+Trước khi bạn bắt đầu sử dụng template này, bạn nên đảm bảo rằng định dạng của template tuân theo quy định về định dạng của khóa luận tốt nghiệp do trường bạn đề ra. Trong hầu hết các trường hợp, định dạng và bố cục của template này sẽ phù hợp. Nếu không, template có thể chỉ cần một số thay đổi nhỏ để khiến định dạng template khớp với định dạng do trường bạn đề ra. Những thay đổi này sẽ cần được thực hiện ở file \file{HUSdissertation.cls}.
+
+
+\subsection{Thông tin về template này}
+
+Template \LaTeX{} này được tạo ra dựa trên file định dạng \LaTeX{} của Steve R. Gunn thuộc Đại học Southampton (Vương quốc Anh), khoa Điện tử và Khoa học Máy tính. Bạn có thể tham khảo file định dạng gốc tại trang:
+\url{http://www.ecs.soton.ac.uk/~srg/softwaretools/document/templates/}
+
+File \file{ecsthesis.cls} của Steve sau đó được điều chỉnh bởi Sunil Patel bằng cách bổ sung khung và cấu trúc thư mục để chia nhỏ và sắp đặt các file nội dung. Template thu được có thể tìm thấy tại trang:\\
+\url{http://www.sunilpatel.co.uk/thesis-template}
+
+Template của Sunil được cung cấp miễn phí tại \url{http://www.LaTeXTemplates.com} nơi mà nó được chỉnh sử nhiều lần nữa dựa trên ý kiến phản hồi và câu hỏi của người dùng. Phiên bản 2.0 trở đi của template được cải tiến nhiều đến mức ta khó lòng có thể nhận ra so với bản đầu tiên. Công việc tạo ra phiên bản 2.0 được thực hiện bởi \href{mailto:vel@latextemplates.com}{Vel} và Johannes Böttcher.
+
+Ngoài ra, phiên bản tiếng Việt mà các bạn đang thấy ở đây được thực hiện bởi các thành viên của Bộ môn Tin học Vật lý, trường ĐHKHTN--ĐHQGHN. Mọi ý kiến góp ý hoặc câu hỏi, các bạn có thể gửi mail cho thầy \href{mailto:vietncp@gmail.com }{Cảnh Việt} và \href{mailto:ngtiencuong@gmail.com }{Tiến Cường}.
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Những thứ mà template này bao gồm}
+
+\subsection{Các thư mục (Folder)}
+
+Template này ban đầu có định dạng file \file{zip}, sau đó có thể giải nén thành các file và thư mục. Các tên của thư mục hầu như phản ảnh đúng nội dung bên trong:
+
+\keyword{Appendices} (phụ lục) -- thư mục này là nơi bạn đưa phần nội dung phụ lục vào. Mỗi mục của phụ lục nên được lưu lại thành một file \file{.tex} riêng. Một ví dụ và một template phụ lục đã được để sẵn trong thư mục này.
+
+\keyword{Chapters} -- (chương) thư mục này là nơi bạn lưu nội dung các chương (chapter) của khóa luận tốt nghiệp/tiểu luận. Một khóa luận/tiểu luận thường có khoảng 5 chương, tùy thuộc vào quy định cụ thể của khóa luận/tiểu luận cũng như tùy thuộc vào từng cơ sở đào tạo. Mỗi chương nên được lưu lại thành một file \file{.tex} riêng. Các chương có thể được phân chia như sau (ví dụ):
+\begin{itemize}
+	\item Mở đầu/Lời mở đầu (tùy chọn)
+	\item Chương 1: Giới thiệu về nội dung khóa luận tốt nghiệp/tiểu luận
+	\item Chương 2: Kiến thức nền tảng và các nguyên lý
+	\item Chương 3: Sắp đặt thí nghiệm (Phòng thí nghiệm)
+	\item Chương 4: Chi tiết thí nghiệm 1
+	\item Chương 5: Chi tiết thí nghiệm 2
+	\item Chương 6: Thảo luận về các kết quả thí nghiệm
+	\item Chương 7: Kết luận và định hướng nghiên cứu trong tương lai
+\end{itemize}
+
+Bố cục chương như trên chuyên dành cho các ngành khoa học thực nghiệm, chuyên ngành của bạn có thể khác.
+
+\keyword{Figures} (hình vẽ) -- thư mục này chứa tất cả hình vẽ có trong khóa luận/tiểu luận. Chúng là những hình vẽ cuối cùng sẽ xuất hiện ở trong văn bản khóa luận/tiểu luận.
+
+
+\subsection{Các tập tin (file)}
+
+Một số file cũng được bao gồm vào trong template. Hầu hết số trong số chúng là những file văn bản không định dạng và bạn có thể thấy nội dung thông qua một trình soạn thảo văn bản bất kì. Sau khi biên dịch xong, bạn sẽ thấy nhiều hơn các file phụ trợ (auxiliary file) được tạo ra bởi \LaTeX{} hoặc BibTeX và những file mà bạn không cần phải xóa hay quan tâm:
+
+\keyword{main.bib} -- đây là một file quan trọng chứa tất cả các thông tin danh mục trích dẫn và tài liệu tham khảo mà bạn sẽ trích dẫn trong khóa luận/tiểu luận (sử dụng BibTeX). Bạn có thể viết nó một cách thủ công, nhưng có các phần mềm quản lý trích dẫn sẽ giúp bạn tạo và quản lý. Tài liệu tham khảo (bibliography) là một mục lớn trong \LaTeX{} và bạn có lẽ sẽ cần đọc về định dạng BibTeX trước khi bắt đầu biên soạn. Các phần mềm quản lý trích dẫn hiện nay cho phép bạn trích xuất các trích dẫn theo định dạng BibTeX, thứ sẽ tiết kiệm công sức của các bạn rất nhiều.
+
+\keyword{HUSdissertation.cls} -- đây là một file quan trọng. Nó là file chứa các cài đặt định dạng \LaTeX{} của khóa luận tốt nghiệp/tiểu luận.
+
+\keyword{setspace.sty} -- đây là một file quan trọng. Nó chứa các cài đặt về căn chỉnh các khoảng cách như lề, dòng, khổ của khóa luận tốt nghiệp/tiểu luận được đọc bởi file \file{HUSdissertation.cls}.
+
+\keyword{setlst.sty} -- đây là một file quan trọng. Nó chứa các cài đặt về liệt kê/trích dẫn code của khóa luận tốt nghiệp/tiểu luận được đọc bởi file \file{main.tex}.
+
+\keyword{main.pdf} -- đây là file khóa luận/tiểu luận đẹp đẽ (dưới định dạng file PDF) tạo ra bởi \LaTeX{}. Trong template này, file PDF được cung cấp sẵn. Sau khi bạn biên dịch lại template, bạn sẽ nhận được một file PDF y hệt.
+
+\keyword{main.tex} -- đây là một file quan trọng. Đây là file sẽ được \LaTeX{} biên dịch để tạo ra khóa luận/tiểu luận của bạn dưới định dạng file PDF. Nó chứa các khung và cấu trúc nội dung mà nói cho \LaTeX{} biết cách bố trí bố cục của khóa luận/tiểu luận. File này được ghi chú (comment) rất chi tiết nên bạn có thể biết chính xác thứ mỗi dòng code thực hiện và tại sao chúng ở đó. Sau khi bạn thêm thông tin cá nhân vào phần \emph{THÔNG TIN VỀ Khóa luận tốt nghiệp/Tiểu luận} -- bạn bây giờ đã bắt đầu biên soạn khóa luận/tiểu luận của mình!
+
+\keyword{main-cover.tex} -- đây là một file quan trọng. Nó chứa các đoạn code mô tả bìa chính (main cover) của khóa luận tốt nghiệp/tiểu luận được đọc bởi file \file{main.tex}.
+
+\keyword{sub-cover.tex} -- đây là một file quan trọng. Nó chứa các đoạn code mô tả bìa phụ (sub-cover) của khóa luận tốt nghiệp/tiểu luận được đọc bởi file \file{main.tex}.
+
+Những file mà không có sẵn trong template mà được tạo ra bởi \LaTeX{} như những file phụ trợ, bao gồm:
+
+\keyword{main.aux} -- đây là một file phụ trợ được tạo ra bởi \LaTeX{}, nếu như bị xóa thì \LaTeX{} sẽ đơn thuần tạo lại nó khi bạn biên dịch lại file \file{main.tex}.
+
+\keyword{main.bbl} -- đây là một file phụ trợ được tạo ra bởi BibTeX, nếu như bị xóa thì BibTeX sẽ đơn thuần tạo lại nó khi bạn chạy file \file{main.aux}. Trong khi file \file{.bib} chứa tất cả các trích dẫn bạn có, thì file \file{.bbl} chứa các trích dẫn bạn thực tế trích dẫn trong khóa luận/tiểu luận và nó được sử dụng để tạo nên mục tài liệu tham khảo ở cuối khóa luận/tiểu luận.
+
+\keyword{main.blg} -- đây là một file phụ trợ được tạo ra bởi BibTeX, nếu như bị xóa thì BibTeX sẽ đơn thuần tạo lại nó khi bạn chạy file \file{main.aux}.
+
+\keyword{main-blx.bib} -- đây là một file phụ trợ được tạo ra bởi BibTeX, nếu như bị xóa thì BibTeX sẽ đơn thuần tạo lại nó khi bạn chạy file \file{main.aux}.
+
+\keyword{main.lof} -- đây là một file phụ trợ được tạo ra bởi \LaTeX{}, nếu như bị xóa thì \LaTeX{} sẽ đơn thuần tạo lại nó khi bạn biên dịch lại file \file{main.tex}. Nó nói cho \LaTeX{} biết cách tạo nên mục \emph{Danh sách hình vẽ}.
+
+\keyword{main.log} -- đây là một file phụ trợ được tạo ra bởi \LaTeX{}, nếu như bị xóa thì \LaTeX{} sẽ đơn thuần tạo lại nó khi bạn biên dịch lại file \file{main.tex}. Nó chứa các thông tin từ \LaTeX{}, nếu như bạn nhận được lỗi (error) và cảnh báo (warning) từ \LaTeX{}, các thông tin này sẽ ở file \file{.log}.
+
+\keyword{main.lot} -- đây là một file phụ trợ được tạo ra bởi \LaTeX{}, nếu như bị xóa thì \LaTeX{} sẽ đơn thuần tạo lại nó khi bạn biên dịch lại file \file{main.tex}. Nó nói cho \LaTeX{} biết cách tạo nên mục \emph{Danh sách bảng}.
+
+\keyword{main.out} -- đây là một file phụ trợ được tạo ra bởi \LaTeX{}, nếu như bị xóa thì \LaTeX{} sẽ đơn thuần tạo lại nó khi bạn biên dịch lại file \file{main.tex}.
+
+Vậy từ danh sách dài này, chỉ những file có đuôi \file{.bib}, \file{.cls}, \file{.sty} và \file{.tex} là quan trọng nhất! Những file phụ trợ khác có thể bỏ qua hoặc xóa bởi vì \LaTeX{} và BibTeX sẽ tạo lại chúng.
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Điền thông tin vào file \file{main.tex}}\label{FillingFile}
+
+Bạn sẽ cần cá nhân hóa template này và điền đầy đủ thông tin vào template, bằng cách chỉnh sửa file \file{main.tex} trong file ở một trình soạn thảo văn bản nào đó hoặc môi trường phát triển tích hợp (IDE) \LaTeX{} yêu thích của bạn.
+
+Hãy mở file \file{main.tex} và cuộn xuống phần nội dung lớn thứ ba tên là \emph{Phần 3: THÔNG TIN VỀ Khóa luận tốt nghiệp/Tiểu luận}, nơi bạn có thể thấy các mục \emph{Tên của Khóa luận tốt nghiệp/Tiểu luận}, \emph{Tên giảng viên hướng dẫn}, \emph{Tên sinh viên thực hiện}, v.v.
+
+Hãy bổ sung đầy đủ thông tin về bản thân, về nhóm nghiên cứ, cơ sở đào tạo, v.v. Bạn cũng có thể chèn các đường dẫn (link), nếu làm vậy, hãy đảm bảo bạn sử dụng đường dẫn URL đầy đủ, bao gồm cả phần \code{http://}. Nếu bạn không muốn chèn các đường dẫn vào các tên thì hãy xóa phần \verb|\href{url}{name}| và chỉ đơn giản là để lại tên.
+
+Khi bạn hoàn thành xong công đoạn này, hãy lưu lại file và biên dịch lại \file{main.tex}. Tất cả thông tin cá nhân của bạn sẽ được điều chỉnh trong file PDF với đầy đủ đường dẫn (nếu có). Lúc này, bạn có thể bắt đầu thực sự biên soạn khóa luận/tiểu luận của mình!
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Giải thích file \file{main.tex}}
+
+File \file{main.tex} chứa cấu trúc của khóa luận/tiểu luận. Trong file này có nhiều ghi chú (comment) mà giải thích các trang và các mục và định dạng được \LaTeX{} tạo ra. Văn bản được chia thành các phần được ghi chú chi tiết với tên tiêu đề in hoa để chỉ ra phần code phía dưới thực hiện chức năng gì. Ban đầu, có vẻ như có khá nhiều code \LaTeX{}, nhưng đó là tất cả, và tất cả đã được điều chỉnh thích hợp nên bạn sẽ không phải quan tâm đến nó nữa.
+
+Hãy bắt đầu bằng việc kiểm tra thông tin cá nhân của bạn ở trang tiêu đề xem có đúng không. Trong một số trường hợp, trường/cơ sở đào tạo của bạn có thể chứa một số thông tin khác so với nội dung có sẵn. Trong trường hợp này, hãy thay đổi nội dung một cách thích hợp, tham khảo các khóa luận/tiểu luận tương tự, hoặc hỏi ý kiến của giảng viên hướng dẫn.
+
+Tiếp đến là trang chứa danh ngôn mà cá nhân người viết thấy tâm đắc. Đây là trang tùy chọn, bạn có thể giữ hoặc xóa trang này. Bạn có thể đưa vào danh ngôn của chính bạn, hoặc của một khoa học gia ưa thích của bạn, một tác giả, hoặc một người nào đó. Hãy đảm bảo chỉ ra tên của người mà bạn đã trích dẫn.
+
+Tiếp đến là lời cảm ơn. Ở trang này, hãy viết về tất cả những người mà bạn muốn cảm ơn (đừng quên đề cập đến người thân, bạn bè, thầy giáo, đồng nghiệp, hay giảng viên hướng dẫn).
+
+Ở phần mục lục, danh sách hình vẽ và bảng đã được định dạng và bạn không cần phải tạo hay chỉnh sửa một cách thủ công. Tiếp sau đó là những trang tùy chọn và có thể bị xóa nếu khóa luận/tiểu luận của bạn không quá thiên về mảng kĩ thuật: hãy thêm danh sách tên viết tắt (abbreviations) mà bạn sử dụng trong khóa luận/tiểu luận, tiếp đó là danh sách các hằng số vật lý/thông số kĩ thuật mà được mặc định sử dụng xuyên suốt quá trình thực hiện, và cuối cùng là danh sách các ký hiệu vật lý/toán học được sử dụng xuyên suốt các công thức/phương trình. Bỏ công ra tạo những danh sách này sẽ giúp cho người đọc có chỗ để tra cứu thay vì tìm kiếm trên internet hoặc tài liệu trích dẫn để tìm hiểu xem một tên viết tắt hoặc ký hiệu nào đó là gì.
+
+Danh sách các ký hiệu được chia làm hai phần: ký hiệu Latin hiện đại và ký hiệu Hy Lạp (như $\alpha$, $\beta$, $\gamma$,\ldots). Trong khi các tên viết tắt và các ký hiệu nên được liệt kê theo thứ tự bảng chữ cái (do người viết \emph{tự sắp xếp}) thì danh sách các hằng số vật lý/toán học nên được nhóm lại thành những nhóm có cùng lĩnh vực/chủ đề.
+
+Trang kế tiếp là một trang tùy chọn, chứa một dòng là lời đề tặng (dedication). Thông thường, dòng này chỉ xuất hiện ở những luận văn thạc sĩ, luận án tiến sĩ, hoặc những công trình nghiên cứu phức tạp, tỉ mỉ, công phu, có ý nghĩa to lớn đối với người thực hiện.
+
+Cuối cùng là phần chứa các chương của khóa luận/tiểu luận. Hãy bỏ chú thích các dòng (xóa ký tự \code{\%}) nếu như bạn muốn thêm các chương. Mỗi chương nên được viết ở một file riêng và nằm trong thư mục \emph{Chapters} và có tên là \file{Chapter1}, \file{Chapter2}, v.v. Tương tự đối với phần phụ lục, hãy bỏ chú thích những dòng mà bạn cần chúng. Mỗi phụ lục cũng nên được viết ở một file riêng, và đặt trong thư mục \emph{Appendices}.
+
+Sau phần mở đầu, các chương, các phụ lục, cuối cùng là phần tài liệu tham khảo (bibliography). Định dạng mục này (được gọi là \option{authoryear}) có đầy đủ tính năng và thậm chí bao gồm cả địa chỉ liên kết đến trang có thể tìm thấy tài liệu tham khảo trực tuyến. Đừng đánh giá thấp việc người đọc của bạn sẽ biết ơn như thế nào khi thấy một trích dẫn chỉ thẳng đến một bài báo chỉ thông qua một cú nhấp chuột. Tất nhiên, điều này phụ thuộc vào việc bạn có cung cấp địa chỉ liên kết URL ở file BibTeX không.
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Các đặc điểm và quy ước chung của khóa luận tốt nghiệp/tiểu luận}\label{ThesisConventions}
+
+Để sử dụng template này một cách hiệu quả nhất, có một vài quy ước mà bạn cần phải tuân theo.
+
+Một trong những điều quan trọng nhất (và khó nhất) trong việc theo dõi trong một tài liệu dài như khóa luận/tiểu luận là tính nhất quán. Sử dụng các quy ước nhất định và cách thức thực hiện khoa học (chẳng hạn như sử dụng danh sách cần làm - Todo list) giúp công việc trở nên dễ dàng hơn. Tất nhiên, tất cả những điều này là tùy chọn và bạn có thể áp dụng phương pháp của riêng mình.
+
+
+\subsection{Định dạng in}
+
+Template này được thiết kế để có thể in hai mặt (nội dung ở cả mặt trước và sau của giấy) vì hầu hết các khóa luận/tiểu luận đều được in và đóng gáy theo cách này. Bạn có thể dễ dàng chuyển sang định dạng in một mặt bằng cách bỏ chú thích tùy chọn \option{oneside} của lệnh \code{documentclass} ở đầu file \file{main.tex}. Sau đó, bạn có thể muốn điều chỉnh lề giấy để phù hợp với quy định của trường/cơ sở đào tạo của bạn.
+
+Do có sự khác biệt giữa \LaTeX{} với \textsc{wysiwyg} nên template được điều chỉnh định dạng \emph{tương đương} với kiểu chữ \textit{Times New Roman} cỡ 13--14 của hệ soạn thảo Microsoft Word, mật độ chữ bình thường, không nén hoặc kéo dãn khoảng cách giữa các chữ, và dãn dòng là 1.5.
+%, lề trên 2cm, lề dưới 2cm, lề trái 3cm, và lề phải 2cm.
+
+
+\subsection{Trích dẫn tài liệu tham khảo}
+
+Package \code{biblatex} được sử dụng để định dạng mục tài liệu tham khảo và thêm các tài liệu chẳng hạn như \cite{Reference1}. Các tùy chỉnh được sử dụng trong file \file{main.tex} sẽ làm các trích dẫn tài liệu được định dạng với tên (các) tác giả được liệt kê cùng với năm xuất bản (tùy chọn \option{style=authoryear}), hoặc là chỉ hiện một số tương ứng với trích dẫn trong mục tài liệu tham khảo (tùy chọn \option{style=numeric}). Kiểu trích dẫn ở template này là \option{citestyle=ieee} (viết tắt của: \textit{Institute for Electrical and Electronics Engineers}) và định dạng trích dẫn là dạng đánh số (\option{style=numeric}). Các tài liệu được đánh số và sắp xếp một cách tự động cho bạn. Để xem cách sử dụng tài liệu, hãy xem qua file \file{Chapter1.tex}. Các phần mềm quản lý trích dẫn hiện nay cho phép bạn kéo-thả tài liệu trích dẫn vào văn bản khi bạn nhập.
+
+Ngoài ra, đối với các tài liệu trích dẫn khác ngoài bài báo (article), chẳng hạn như sách (book), kỷ yếu (inproceedings), hoặc tài liệu hướng dẫn (manual), bạn hoàn toàn có thể trích dẫn vào bài của mình (ví dụ: \cite{Reference4} và \cite{Reference5}). Hãy lưu ý rằng mỗi một kiểu tài liệu trích dẫn lại có sự khác nhau đôi chút về các đầu mục khai báo ở file \file{main.bib}. Bạn có thể tham khảo thêm thông tin tại \href{https://www.bibtex.com/e/entry-types/#manual}{đường dẫn này}. 
+
+Các tài liệu khoa học phải đặt \emph{trước} dấu chấm câu nếu có (chẳng hạn như dấu phẩy hoặc dấu chấm). Tương tự với chú thích\footnote{Chẳng hạn như chú thích này, ở đây ở cuối trang.} cuối trang. Bạn có thể thay đổi nội dung nhưng điều quan trọng nhất là giữ cho định dạng nhất quán trong suốt khóa luận/tiểu luận. Bản thân chú thích phải là những câu mô tả đầy đủ (bắt đầu bằng chữ in hoa và kết thúc bằng dấu chấm câu). APA6 nêu rõ: \enquote{Các số chú thích phải được viết chỉ số trên, [...], theo sau bất kỳ dấu câu nào ngoại trừ dấu gạch ngang.} Hướng dẫn tiêu chuẩn Chicago (Chicago manual of style) nêu rõ: \enquote {Một số ghi chú phải được đặt ở cuối câu hoặc mệnh đề. Số đứng sau bất kỳ dấu câu nào ngoại trừ dấu gạch ngang, mà nó đứng trước. Nó đứng sau một dấu đóng ngoặc đơn.}
+
+Mục tài liệu tham khảo được tạo với các tài liệu được sắp xếp theo thứ tự bảng chữ cái với ``tên họ'' của tên tác giả đầu tiên. Định dạng này tương tự như định dạng trích dẫn tài liệu APA. Để xem cách \LaTeX{} bố trí tài liệu tham khảo, hãy quan sát kĩ phần cuối của tài liệu này (hoặc chỉ cần nhấp vào các liên kết số (các trích dẫn) trong tài liệu này).
+
+
+\subsubsection{Lưu ý với bibtex}
+
+Phần phụ trợ cho bibtex trong template này theo mặc định không chính xác hóa các ký tự mã hóa unicode (tức là các ký tự "quốc tế"). Bạn có thể thấy cảnh báo về điều này ở file \file{.log} và, nếu các tài liệu trích dẫn có chứa các ký tự unicode thì chúng có thể không hiển thị chính xác hoặc bị thiếu. Giải pháp là sử dụng chương trình phụ trợ biber thay cho chương trình phụ trợ bibtex đã cũ và không còn phù hợp. Cụ thể, hãy tìm trong file \file{main.tex} xem tùy chọn \option{backend=bibtex} và thay đổi thành \option{backend=biber}. Bạn sẽ cần xóa tất cả các file phụ trợ BibTeX và chuyển đến vị trí thư mục của template ở terminal (command prompt). Khi đó, chỉ cần gõ lệnh \code{biber main} và biber sẽ biên dịch danh mục tài liệu tham khảo. Sau đó, bạn có thể biên dịch file \file{main.tex} như bình thường và danh mục tài liệu tham khảo sẽ được cập nhật. Một cách khác là thiết lập trình soạn thảo LaTeX của bạn để biên dịch với biber thay vì bibtex, hãy xem \href{http://tex.stackexchange.com/questions/154751/biblatex-with-biber-configuring-my-editor-to-avoid-undefined-citations/}{đường dẫn này} để thực hiện cách này với các trình soạn thảo khác nhau.
+
+
+\subsection{Bảng số liệu}
+
+Bảng số liệu là một cách hiệu quả để biểu diễn kết quả của bạn, dưới đây là bảng ví dụ được tạo bằng code sau:
+\begin{Verbatim}
+\begin{table}[h!]
+	\caption{Ảnh hưởng của phương pháp điều trị X và Y đối với bốn 
+			 nhóm được nghiên cứu.}
+	\label{tab:treatments}
+	\centering
+	\begin{tabular}{l l l}
+		\toprule
+		\tabhead{Nhóm}&\tabhead{Phương pháp X}&\tabhead{Phương pháp Y}\\
+		\midrule
+		1	& 0.20	& 0.80	\\
+		2	& 0.17	& 0.70	\\
+		3	& 0.24	& 0.75	\\
+		4	& 0.68	& 0.30	\\
+		\bottomrule	\\
+	\end{tabular}
+\end{table}
+\end{Verbatim}
+
+\begin{table}[h!]
+	\caption{Ảnh hưởng của phương pháp điều trị X và Y đối với bốn nhóm được nghiên cứu.}
+	\label{tab:treatments}
+	\centering
+	\begin{tabular}{l l l}
+		\toprule
+		\tabhead{Nhóm}&\tabhead{Phương pháp X}&\tabhead{Phương pháp Y}\\
+		\midrule
+		1	& 0.20	& 0.80	\\
+		2	& 0.17	& 0.70	\\
+		3	& 0.24	& 0.75	\\
+		4	& 0.68	& 0.30	\\
+		\bottomrule	\\
+	\end{tabular}
+\end{table}
+
+Bạn có thể trích dẫn các bảng với câu lệnh \verb|\ref{<nhãn>}| trong đó \verb|nhãn| được định nghĩa trong quá trình khai báo bảng số bằng lệnh \verb|\label{<nhãn>}|. Hãy xem file \file{Chapter1.tex} để biết rõ hơn về \verb|nhãn| và các trích dẫn (ví dụ: Bảng~\ref{tab:treatments}).
+
+
+\subsection{Hình vẽ}
+
+Khóa luận tốt nghiệp/tiểu luận của bạn nên có nhiều hình vẽ (được đặt trong thư mục \emph{Figures}). Các để chèn hình vẽ vào khóa luận/tiểu luận là sử dụng một đoạn code chẳng hạn như sau:
+\begin{Verbatim}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{
+		VNU Dai hoc Tong hop Ha Noi - 19 Le Thanh Tong.jpeg
+	}
+	\caption[Đại học Tổng hợp]{
+		Đại học Tổng hợp Hà Nội tại 19 Lê Thánh Tông.
+	}
+	\label{fig:DHTHHN}
+\end{figure}
+\end{Verbatim}
+
+Hãy quan sát file \file{Chapter1.tex}. Đoạn code này trong file \file{Chapter1.tex} sẽ tạo ra hình vẽ của Đại học Tổng hợp mà bạn có thể thấy dưới đây.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{VNU Dai hoc Tong hop Ha Noi - 19 Le Thanh Tong.jpeg}
+	\caption[Đại học Tổng hợp]{Đại học Tổng hợp Hà Nội tại 19 Lê Thánh Tông.}
+	\label{fig:DHTHHN}
+\end{figure}
+
+Các hình vẽ không phải lúc nào cũng xuất hiện ở nơi bạn đặt chúng ở file nguồn. Vị trí của chúng phụ thuộc vào xem liệu có còn khoảng trống ở trang hiện tại không. Đôi khi nếu không đủ khoảng trống để đặt vừa hình vẽ vào vị trí mà nó cần đứng (liên quan đến văn bản) thì \LaTeX{} sẽ đặt hình vẽ ở đầu trang tiếp theo. Tuy nhiên bạn vẫn có thể tùy chỉnh vị trí cho hình vẽ, chẳng hạn tùy chỉnh \option{[h!]} ở ngay sau lệnh \verb|\begin{figure}| như ví dụ trên. Bạn có thể tìm hiểu thêm tại \href{https://www.overleaf.com/learn/latex/Positioning_images_and_tables}{đường dẫn này}. Nhìn chung, chọn vị trí cho hình vẽ là việc của \LaTeX{} nên bạn chỉ cần chú tâm vào việc làm hình vẽ sao cho đẹp nhất!
+
+Hình vẽ phải có chú thích (caption) để trong trường hợp bạn cần chỉ tới chúng (chẳng hạn như Hình~\ref{fig:DHTHHN}). Lệnh \verb|\caption| chứa hai phần, phần đầu tiên, bên trong dấu ngoặc vuông là dòng chữ sẽ xuất hiện trong ở mục \emph{Danh sách hình vẽ}, và nên được viết ngắn gọn. Phần thứ hai được đặt trong dấu ngoặc nhọn chứa nội dung mô tả dài hơn và đầy đủ hơn về hình vẽ.
+
+\LaTeX{} có thể sử dụng hình ảnh ở định dạng pdf, jpg (jpeg) và png.
+
+
+\subsection{Liệt kê code}
+
+Một cập nhật nho nhỏ của template này so với bản gốc là có thêm gói bổ trợ \code{listings} và các tùy chỉnh cho thao tác liệt kê code. Nếu khóa luận/tiểu luận của bạn bao gồm nhiều yếu tố lập trình thì chắc chắn mục này sẽ hữu ích đối với bạn.
+
+Trước hết, bạn chỉ nên liệt kê toàn bộ file code ở phần phụ lục (xem ví dụ ở Phụ lục~\ref{AppendixB}), còn thông thường phần nội dung chính của khóa luận/tiểu luận chỉ nên liệt kê một số dòng code hoặc các đoạn code nhỏ nhằm mục đích giải thích thuật toán quan trọng hoặc giải thích cách hoạt động của chương trình. Để liệt kê một số dòng code, ta có thể liệt kê trực tiếp, với câu lệnh:
+\begin{Verbatim}
+\begin{lstlisting}[style=codePython]
+		while chunk != b'':
+			# read only 1024 bytes at a time
+			chunk = file.read(1024)
+			h.update(chunk)
+\end{lstlisting}
+\end{Verbatim}
+
+Và đoạn code trích dẫn sẽ như sau:
+\begin{lstlisting}[style=codePython]
+		while chunk != b'':
+			# read only 1024 bytes at a time
+			chunk = file.read(1024)
+			h.update(chunk)
+\end{lstlisting}
+
+Ở ví dụ trên, đoạn code được trích dẫn thuộc ngôn ngữ Python. Để tùy chọn ngôn ngữ cho đoạn code, ta sử dụng \option{language=<ngôn ngữ>}, trong đó \option{<ngôn ngữ>} là tên của ngôn ngữ lập trình bạn muốn sử dụng. Danh sách các ngôn ngữ có sẵn bạn có thể xem tại \href{https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Supported_languages}{đường dẫn này}. Mặc dù vậy, những tùy chỉnh mặc định của \code{listings} thường không phù hợp với phong cách thẩm mĩ cũng như với bố cục của khóa luận/tiểu luận. Do vậy, template này đã định nghĩa sẵn một số định dạng của một số ngôn ngữ phổ biến là C/C++, Python, và Matlab. Hơn nữa, trong trường hợp bạn cần liệt kê một đoạn text không có định dạng trong file (plain text) hoặc có định dạng hiển thị ở terminal (console/command prompt), template này cũng hỗ trợ cho bạn thao tác đó. Để sử dụng những định dạng này, hãy sử dụng \option{style=<kiểu định dạng>}, trong đó, \option{<kiểu định dạng>} có thể là \option{codeC} (ứng với ngôn ngữ C/C++), \option{codePython} (ứng với ngôn ngữ Python, như ví dụ trên), \option{codeMatlab} (ứng với ngôn ngữ Matlab), \option{plaintext} (ứng với hiển thị plaintext), và \option{console} (ứng với hiển thị text ở terminal). Ngoài ra, để đặt ngôn ngữ mặc định cho toàn bộ khóa luận/tiểu luận, bạn có thể sử dụng lệnh \verb|\lstset{style=<kiểu định dạng>}| ở ngay sau lệnh \verb|\begin{document}| của file \file{main.tex}.
+	
+Có thể bạn sẽ muốn trích dẫn một số dòng code nhất định trong một file code dài, khi đó hãy sử dụng lệnh:
+
+\begin{Verbatim}
+\lstinputlisting[style=codePython,linerange={18-21}]{"Code/Hash.py"}
+\end{Verbatim}
+
+Và kết quả là:
+\lstinputlisting[style=codePython, linerange={18-21}]{"Code/Hash.py"}
+
+Cũng liệt kê cùng một đoạn code Python như ví dụ trước đó, nhưng ví dụ trên sử dụng lệnh \verb|\lstinputlisting| để liệt kê code từ một file, mà cụ thể ở đây là file \file{Hash.py} (xem toàn bộ code ở Phụ lục~\ref{AppendixB}). Vì đoạn code thực tế chính là những dòng từ 18 đến 21 của file \file{Hash.py} nên tùy chọn \option{linerange=\{18-21\}} sẽ liệt kê những dòng này. Nếu bạn muốn đánh số dòng từ 18 như thực tế trong file, thay vì từ 1, thì tùy chọn \option{firstnumber=18} giúp bạn thực hiện thao tác này.
+
+
+\subsection{Gõ công thức toán học}
+
+Nếu luận án của bạn chứa nhiều công thức toán học, hãy đảm bảo rằng \LaTeX{} sẽ làm cho chúng trông đẹp mắt, mặc dù nó sẽ không thể giải các phương trình cho bạn.
+
+Hướng dẫn \enquote{Một tài liệu ngắn gọn giới thiệu về \LaTeX} (có sẵn trên \href{https://mirror.kku.ac.th/CTAN/info/lshort/vietnamese/lshort-vi.pdf}{CTAN}) sẽ chỉ cho bạn mọi thứ bạn cần biết trong hầu hết các trường hợp gõ công thức toán học. Nếu bạn cần nhiều thông tin hơn, một hướng dẫn đầy đủ hơn được biên soạn bởi AMS, tên là \enquote{A Short Math Guide to \LaTeX}, có thể download ở:\\
+\url{ftp://ftp.ams.org/pub/tex/doc/amsmath/short-math-guide.pdf}
+
+Có nhiều ký hiệu \LaTeX{} khác nhau để nhớ, tuy nhiên, may mắn là bạn có thể tìm thấy hầu hết các ký hiệu phổ biến ở \href{http://ctan.org/pkg/comprehensive}{The Comprehensive \LaTeX~Symbol List}.
+
+Bạn có thể viết một phương trình và phương trình này sẽ được tự động được đánh số bởi \LaTeX{} chẳng hạn như sau:
+\begin{Verbatim}
+\begin{equation}
+	E = mc^2
+	\label{eqn:Einstein}
+\end{equation}
+\end{Verbatim}
+
+Đoạn code này sẽ tạo ra phương trình tương đương khối lượng-năng lượng nổi tiếng của Einstein:
+\begin{equation}
+	E = mc^2
+	\label{eqn:Einstein}
+\end{equation}
+
+Một ví dụ khác về phương trình của Einstein nhưng phức tạp hơn sử dụng đoạn code sau:
+\begin{Verbatim}
+\begin{equation}
+	E_{total} 
+	= E_0 + E_K 
+	= m_0 c^2 + m_0 c^2 (\gamma - 1)
+	= m_0 c^2 + m_0 c^2 \left( \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}-1 \right)
+	\label{eqn:Einstein2}
+\end{equation}
+\end{Verbatim}
+
+
+Và ta thu được phương trình:
+\begin{equation}
+	E_{total} 
+	= E_0 + E_K 
+	= m_0 c^2 + m_0 c^2 (\gamma - 1)
+	= m_0 c^2 + m_0 c^2 \left( \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}-1 \right)
+	\label{eqn:Einstein2}
+\end{equation}
+
+Thông thường, đối với những phương trình dài hoặc những phép biến đổi qua nhiều bước, bạn nên cắt ngắn chúng bằng cách xuống dòng sử dụng lệnh \verb|\begin{flalign}|. Bạn có thể tham khảo ví dụ dưới đây:
+\begin{Verbatim}
+\begin{flalign}
+	E_{total} 
+	&= E_0 + E_K \\
+	&= m_0 c^2 + m_0 c^2 (\gamma - 1) \nonumber \\
+	&= m_0 c^2 + m_0 c^2 \left( \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}-1 \right)
+\end{flalign}
+\end{Verbatim}
+
+Ta có phương trình: 
+\begin{flalign}
+	E_{total} 
+	&= E_0 + E_K \\
+	&= m_0 c^2 + m_0 c^2 (\gamma - 1) \nonumber \\
+	&= m_0 c^2 + m_0 c^2 \left( \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}-1 \right)
+\end{flalign}
+
+Tất cả phương trình bạn viết (mà không nằm trong một đoạn văn bản) sẽ được đánh số một cách tự động bởi \LaTeX{}. Nếu bạn không muốn một phương trình cụ thể được đánh số, hãy sử dụng cách viết: 
+\begin{Verbatim}
+\[ E = mc^2 \]
+\end{Verbatim}
+hoặc
+\begin{Verbatim}
+\begin{equation*}
+	E = mc^2
+\end{equation*}
+\end{Verbatim}
+
+Còn trường hợp bạn muốn ghi tên các biến, thậm chí là cả công thức trực tiếp trong đoạn văn bản (chẳng hạn ghi phương trình $E=mc^2$) thì bạn hãy ghi tên biến hoặc công thức đó ở giữa hai dấu \verb|$| (chẳng hạn: \verb|$E=mc^2$|).
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Phân chia các mục và tiểu mục}
+
+Bạn nên chia nhỏ khóa luận tốt nghiệp/tiểu luận của mình thành các mục (section) và tiểu mục (subsection) một cách hợp lý, có độ dài vừa phải và trọn vẹn ý. \LaTeX{} sẽ tự động xây dựng mục lục dựa trên các lệnh \verb|\chapter{}|, \verb|\section{}| và \verb|\subsection{}| (tương ứng với \textit{chương}, \textit{mục}, và \textit{tiểu mục}) mà bạn sử dụng trong file nguồn.
+
+Mục lục nên chỉ liệt kê các nội dụng ở tối đa ba (3) cấp độ. Lệnh \verb|chapter{}| là cấp không (0). Lệnh \verb|\section{}| là cấp một (1) và lệnh \verb|\subsection{}| là cấp hai (2). Trong khóa luận/tiểu luận, nhiều khả năng bạn sẽ thậm chí dùng đến cả lệnh \verb|subsubsection{}|, tương ứng với cấp ba (3). Độ sâu mà mục lục thiết lập được đặt trong file \file{HUSdissertation.cls}. Nếu bạn cần thay đổi điều này, bạn có thể thực hiện trong file \file{main.tex}. Tuy nhiên, tốt nhất là không nên thay đổi!
+
+
+%----------------------------------------------------------------------------------------
+
+\section{Kết thúc}
+
+Bạn đã đọc đến phần cuối của hướng dẫn nho nhỏ này. Giờ bạn đã có thể đổi tên hoặc ghi đè file PDF này và bắt đầu viết \file{Chapter1.tex} của riêng mình cũng như phần còn lại của khóa luận/tiểu luận. Công việc thiết lập cấu trúc và khung nội dung đã được thực hiện cho bạn. Bây giờ việc của bạn chỉ là điền vào nó!
+
+Chúc may mắn và có thật nhiều niềm vui với \LaTeX{}!
+
+\begin{flushright}
+Hướng dẫn này được viết bởi ---\\
+Công Phương Cao: \href{https://github.com/cpc1996}{github.com}\\
+Nguyễn Cảnh Việt: \href{mailto:vietncp@gmail.com}{gmail.com}\\
+Nguyễn Tiến Cường: \href{mailto:ngtiencuong@gmail.com}{gmail.com}
+\end{flushright}
+
+
+

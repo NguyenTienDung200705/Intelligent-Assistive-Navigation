@@ -50,7 +50,7 @@ export default function ImageViewer({ result, inputFile, inputMode = 'image' }) 
             result?.annotated_image
               ? <img src={getMediaUrl(result.annotated_image)} alt="Detection" className="viewer-img" />
               : result?.output_video
-              ? <video src={getMediaUrl(result.output_video)} controls className="viewer-img" />
+              ? <video key={result.output_video} src={getMediaUrl(result.output_video)} controls className="viewer-img"  preload="metadata"/>
               : <EmptyViewer text="Không có ảnh kết quả" />
           )}
           {tab === 'depth' && (
@@ -60,7 +60,7 @@ export default function ImageViewer({ result, inputFile, inputMode = 'image' }) 
           )}
           {tab === 'original' && inputFile && (
             inputMode === 'video'
-              ? <video src={inputFile} controls className="viewer-img" />
+              ? <video key={inputFile} src={inputFile} controls className="viewer-img" preload="metadata" />
               : <img src={inputFile} alt="Original" className="viewer-img" />
           )}
         </div>
