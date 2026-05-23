@@ -3,6 +3,7 @@ Utility for generating and caching TTS audio files.
 Wraps gTTS with local disk caching.
 """
 import hashlib
+import time
 import logging
 from pathlib import Path
 
@@ -21,7 +22,7 @@ def generate_audio(text: str, lang: str = "vi", slow: bool = False) -> str | Non
         return None
 
     key = hashlib.md5(f"{lang}:{text}".encode()).hexdigest()[:14]
-    filename = f"tts_{key}.mp3"
+    filename = f"tts_{key}_{int(time.time())}.mp3"
     filepath = OUTPUT_DIR / filename
 
     if filepath.exists():
@@ -30,6 +31,8 @@ def generate_audio(text: str, lang: str = "vi", slow: bool = False) -> str | Non
 
     try:
         from gtts import gTTS
+        logger.info(f"TTS TEXT: {text}")
+        logger.info(f"TTS LANG: {lang}")
         tts = gTTS(text=text.strip(), lang=lang, slow=slow)
         tts.save(str(filepath))
         logger.info(f"✅ TTS generated: {filename}")

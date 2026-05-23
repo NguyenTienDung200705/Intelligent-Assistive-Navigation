@@ -95,7 +95,7 @@ class TTSEngine:
 
             if os.path.exists(wav) and os.path.getsize(wav) > 500:
                 # Try ffmpeg wav→mp3
-                ret = os.system(f'ffmpeg -y -i "{wav}" -ar 22050 -ac 1 -q:a 4 "{fpath}" -loglevel quiet 2>/dev/null')
+                ret = os.system(f'ffmpeg -y -i "{wav}" -ar 22050 -ac 1 -q:a 4 "{fpath}" -loglevel quiet >nul 2>&1')
                 os.remove(wav)
                 if not (fpath.exists() and fpath.stat().st_size > 500):
                     # ffmpeg failed — rename wav as mp3 (still playable by browsers)
