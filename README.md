@@ -91,7 +91,7 @@ npm run dev
 
 ---
 
-## ⚙️ Danger Scoring Formula
+## Danger Scoring Formula
 
 ```
 Danger Score =
@@ -110,7 +110,7 @@ Danger Score =
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```bash
 # Build và chạy toàn bộ stack
@@ -125,19 +125,7 @@ docker-compose up frontend
 
 ---
 
-## 🧪 Tests
-
-```bash
-cd backend
-source venv/bin/activate
-python -m pytest tests/ -v
-```
-
-17 unit tests covering: geometry, depth, danger analysis, tracker, image utils.
-
----
-
-## 🔧 Cấu hình
+## Cấu hình
 
 Chỉnh sửa `backend/app/config.py` hoặc file `.env`:
 
@@ -151,7 +139,7 @@ Chỉnh sửa `backend/app/config.py` hoặc file `.env`:
 
 ---
 
-## 🚧 Giới hạn hiện tại
+## Giới hạn hiện tại
 
 - Depth estimation MiDaS chỉ cho khoảng cách tương đối (không phải tuyệt đối)
 - Real-time camera streaming ~5 FPS (phụ thuộc phần cứng)
@@ -160,7 +148,7 @@ Chỉnh sửa `backend/app/config.py` hoặc file `.env`:
 
 ---
 
-## 🔮 Cải tiến tương lai
+## Cải tiến tương lai
 
 - [ ] ByteTrack chính thức (thay SimpleTracker)
 - [ ] Stereo camera support → depth tuyệt đối
