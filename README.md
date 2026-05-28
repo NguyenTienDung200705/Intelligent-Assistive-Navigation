@@ -66,9 +66,22 @@ SmartNav là hệ thống hỗ trợ điều hướng thông minh sử dụng Co
 
 ```bash
 git clone https://github.com/NguyenTienDung200705/Intelligent-Assistive-Navigation.git
+cd Intelligent-Assistive-Navigation
 ```
 
-### Bước 2 — Khởi động
+### Bước 2 (install dependencies)
+```bash
+# Backend
+cd backend
+pip install -r requirements.txt
+
+# Frontend
+cd frontend
+npm install
+```
+
+
+### Bước 3 — Khởi động
 
 ```bash
 # Terminal 1 — Backend
