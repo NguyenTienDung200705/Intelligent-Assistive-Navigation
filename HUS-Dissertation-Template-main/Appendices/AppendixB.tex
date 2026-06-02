@@ -4,4 +4,285 @@
 
 \label{AppendixB} % Để trích dẫn chương này ở chỗ nào đó trong bài, hãy sử dụng lệnh \ref{AppendixB} 
 
-%----------------------------------------------------------------------------------------
+\begin{lstlisting}[language=Python, caption={Object Detection Function}, label={lst:detect_function}]
+def detect(self, frame: np.ndarray) -> List[Dict[str, Any]]:
+    if self.model is None:
+        return self._mock_detect(frame)
+
+    try:
+        results = self.model(
+            frame,
+            conf=self.conf,
+            iou=self.iou,
+            imgsz=self.imgsz,
+            verbose=False,
+        )[0]
+
+        detections = []
+        for box in results.boxes:
+            cls_id = int(box.cls[0])
+            cls_name = results.names.get(cls_id, "default")
+            conf = float(box.conf[0])
+            x1, y1, x2, y2 = [int(v) for v in box.xyxy[0]]
+            cx = (x1 + x2) // 2
+            cy = (y1 + y2) // 2
+
+            detections.append({
+                "class_id": cls_id,
+                "class_name": cls_name,
+                "label_vi": VI_LABELS.get(cls_name, VI_LABELS["default"]),
+                "confidence": round(conf, 3),
+                "bbox": [x1, y1, x2, y2],
+                "center": [cx, cy],
+                "area": (x2 - x1) * (y2 - y1),
+            })
+        return detections
+
+    except Exception as e:
+        logger.error(f"Detection error: {e}")
+        return []
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Object Tracking Function}, label={lst:tracking_update}]
+def update(self, detections: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    if not detections:
+        for obj_id in list(self.disappeared.keys()):
+            self.disappeared[obj_id] += 1
+            if self.disappeared[obj_id] > self.max_disappeared:
+                self._deregister(obj_id)
+        return []
+
+    input_centroids = [d["center"] for d in detections]
+
+    if not self.objects:
+        for i, det in enumerate(detections):
+            self._register(det)
+    else:
+        object_ids = list(self.objects.keys())
+        object_centroids = [
+            self.objects[oid]["center"] for oid in object_ids
+        ]
+
+        # Simple nearest-neighbour matching
+        matched_det = set()
+        matched_obj = set()
+
+        for i, obj_id in enumerate(object_ids):
+            min_dist = float("inf")
+            min_j = -1
+
+            for j, inp_c in enumerate(input_centroids):
+                if j in matched_det:
+                    continue
+
+                dist = self._euclidean(
+                    object_centroids[i], inp_c
+                )
+
+                if dist < min_dist:
+                    min_dist = dist
+                    min_j = j
+
+            if min_j >= 0 and min_dist < self.max_distance:
+                self.objects[obj_id] = {
+                    **detections[min_j],
+                    "track_id": obj_id,
+                }
+
+                self.history[obj_id].append(
+                    detections[min_j]["center"]
+                )
+
+                if len(self.history[obj_id]) > 15:
+                    self.history[obj_id] = \
+                        self.history[obj_id][-15:]
+
+                self.disappeared[obj_id] = 0
+                matched_det.add(min_j)
+                matched_obj.add(obj_id)
+
+            else:
+                self.disappeared[obj_id] += 1
+
+                if (
+                    self.disappeared[obj_id]
+                    > self.max_disappeared
+                ):
+                    self._deregister(obj_id)
+
+        for j, det in enumerate(detections):
+            if j not in matched_det:
+                self._register(det)
+
+    # Enrich with motion info
+    result = []
+
+    for obj_id, obj in self.objects.items():
+        enriched = {**obj}
+        enriched["track_id"] = obj_id
+
+        (
+            enriched["direction"],
+            enriched["speed_label"],
+            enriched["speed_score"],
+        ) = self._analyze_motion(obj_id)
+
+        result.append(enriched)
+
+    return result
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Depth Estimation Function Using MiDaS}, label={lst:depth_estimation}]
+def estimate(self, frame: np.ndarray) -> np.ndarray:
+    """Returns normalized depth map [0..1], 1=near, 0=far"""
+    
+    if self.model is None:
+        return self._gradient_fallback(frame)
+
+    try:
+        import torch
+
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        inp = self.transform(rgb).to(self.device)
+
+        with torch.no_grad():
+            pred = self.model(inp)
+
+            pred = torch.nn.functional.interpolate(
+                pred.unsqueeze(1),
+                size=frame.shape[:2],
+                mode="bicubic",
+                align_corners=False,
+            ).squeeze()
+
+        depth = pred.cpu().numpy()
+
+        # Invert: MiDaS output is disparity (higher = closer)
+        d_min, d_max = depth.min(), depth.max()
+
+        if d_max > d_min:
+            depth = (depth - d_min) / (d_max - d_min)
+
+        return depth
+
+    except Exception as e:
+        logger.error(f"Depth estimation error: {e}")
+        return self._gradient_fallback(frame)
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Text-to-Speech Audio Generation Functions}, label={lst:tts_functions}]
+def _gtts(self, text: str, fpath: Path) -> bool:
+    try:
+        from gtts import gTTS
+
+        tts = gTTS(
+            text=text,
+            lang=self.lang,
+            slow=False
+        )
+
+        tts.save(str(fpath))
+
+        ok = (
+            fpath.exists()
+            and fpath.stat().st_size > 1000
+        )
+
+        if not ok:
+            fpath.unlink(missing_ok=True)
+
+        return ok
+
+    except Exception as e:
+        logger.debug(f"gTTS failed: {e}")
+        fpath.unlink(missing_ok=True)
+        return False
+
+
+def _espeak(self, text: str, fpath: Path) -> bool:
+    try:
+        import pyttsx3
+
+        engine = pyttsx3.init()
+
+        voices = engine.getProperty("voices")
+        vi_voice = next(
+            (
+                v for v in voices
+                if "vi" in v.id.lower()
+            ),
+            None,
+        )
+
+        if vi_voice:
+            engine.setProperty(
+                "voice",
+                vi_voice.id
+            )
+
+        engine.setProperty("rate", 145)
+        engine.setProperty("volume", 1.0)
+
+        wav = str(fpath).replace(
+            ".mp3",
+            ".wav"
+        )
+
+        engine.save_to_file(text, wav)
+        engine.runAndWait()
+        engine.stop()
+
+        if (
+            os.path.exists(wav)
+            and os.path.getsize(wav) > 500
+        ):
+
+            # Try ffmpeg wav -> mp3
+            ret = os.system(
+                f'ffmpeg -y -i "{wav}" '
+                f'-ar 22050 -ac 1 -q:a 4 '
+                f'"{fpath}" '
+                f'-loglevel quiet '
+                f'>nul 2>&1'
+            )
+
+            os.remove(wav)
+
+            if not (
+                fpath.exists()
+                and fpath.stat().st_size > 500
+            ):
+
+                # ffmpeg failed
+                engine2 = pyttsx3.init()
+
+                if vi_voice:
+                    engine2.setProperty(
+                        "voice",
+                        vi_voice.id
+                    )
+
+                engine2.setProperty(
+                    "rate",
+                    145
+                )
+
+                engine2.save_to_file(
+                    text,
+                    str(fpath)
+                )
+
+                engine2.runAndWait()
+                engine2.stop()
+
+            return (
+                fpath.exists()
+                and fpath.stat().st_size > 500
+            )
+
+        return False
+
+    except Exception as e:
+        logger.debug(f"eSpeak failed: {e}")
+        return False
+\end{lstlisting}
