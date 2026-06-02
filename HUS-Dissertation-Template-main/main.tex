@@ -52,6 +52,18 @@ chapterinoneline,
 \usepackage[autostyle=true]{csquotes}
 \usepackage{float}
 
+\usepackage[utf8]{inputenc}
+\usepackage{babel} % <--- Đã xóa [vietnamese] để hết bị xung đột
+\usepackage{tikz}
+\usetikzlibrary{
+    shapes.geometric,
+    arrows.meta,
+    positioning,
+    shadows,
+    calc
+}
+\usepackage{enumitem}
+
 %----------------------------------------------------------------------------------------
 %	PHẦN 2: CÁC PACKAGE BỔ TRỢ THÊM VÀO TRONG QUÁ TRÌNH BIÊN SOẠN
 %----------------------------------------------------------------------------------------
@@ -93,15 +105,15 @@ chapterinoneline,
 %	PHẦN 3: THÔNG TIN VỀ Khóa luận tốt nghiệp/Tiểu luận (THESIS INFORMATION)
 %----------------------------------------------------------------------------------------
 
-\author{Tên sinh viên thực hiện} 			% Ví dụ: "Nguyễn Thị Thu Thảo"
-\thesistitle{Tên của Khóa luận tốt nghiệp/Tiểu luận} % Ví dụ: "Nghiên cứu chế tạo và tính chất quang học của vật liệu nano LaF3:Sm3+"
+\author{NHÓM 11} 			% Ví dụ: "Nguyễn Thị Thu Thảo"
+\thesistitle{PHƯƠNG PHÁP NHẬN DIỆN VẬT CẢN VÀ ƯỚC LƯỢNG KHOẢNG CÁCH ĐỂ HỖ TRỢ NGƯỜI KHIẾM THỊ} % Ví dụ: "Nghiên cứu chế tạo và tính chất quang học của vật liệu nano LaF3:Sm3+"
 
-\supervisor {Tên giảng viên hướng dẫn 1} 	% Ví dụ: "PGS. TS. Nguyễn Ngọc Long"
-\supervisorr{Tên giảng viên hướng dẫn 2} 	% Tên này nếu không có thì để trống!
+\supervisor {TS. Nguyễn Tiến Cường} 	% Ví dụ: "PGS. TS. Nguyễn Ngọc Long"
+\supervisorr{CN. Vi Anh Quân} 	% Tên này nếu không có thì để trống!
 
-\field{Tên ngành đào tạo} 					% Ví dụ: "Ngành Vật lý", "Ngành Hóa học", v.v.
-\program{Tên chương trình đào tạo} 			% Ví dụ: "Chương trình đào tạo chuẩn", "Chương trình đào tạo cử nhân tài năng", v.v.
-\doctype{Khóa luận tốt nghiệp đại học hệ chính quy} % Điền vào đây: "Khóa luận tốt nghiệp đại học hệ chính quy" hoặc "Tiểu luận"
+\field{Ngành Kỹ thuật Điện tử và Tin học} 					% Ví dụ: "Ngành Vật lý", "Ngành Hóa học", v.v.
+\program{Chương trình đào tạo chuẩn} 			% Ví dụ: "Chương trình đào tạo chuẩn", "Chương trình đào tạo cử nhân tài năng", v.v.
+\doctype{Đề tài môn Học Máy} % Điền vào đây: "Khóa luận tốt nghiệp đại học hệ chính quy" hoặc "Tiểu luận"
 
 \university{\href{http://hus.vnu.edu.vn}{Trường Đại học Khoa học Tự nhiên}}
 \department{\href{http://hus.vnu.edu.vn/gioi-thieu/co-cau-to-chuc/khoa-truc-thuoc/khoa-vat-ly.html}{Khoa Vật lý}}
@@ -155,18 +167,40 @@ chapterinoneline,
 	\addchaptertocentry{\acknowledgementname}
 	\thispagestyle{empty}
 
-Trong quá trình thực hiện môn học Đồ án Kỹ thuật Điện tử và Tin học để hoàn thành bài báo cáo này, em đã nhận được rất nhiều sự quan tâm, hướng dẫn và hỗ trợ quý báu từ thầy Vi Anh Quân. Em xin bày tỏ lòng biết ơn chân thành và sâu sắc đến thầy vì sự tận tâm trong giảng dạy, những góp ý chuyên môn quý báu cũng như sự hỗ trợ nhiệt tình trong suốt quá trình học tập và thực hiện đề tài.
+Trong quá trình thực hiện môn học Học máy (Machine Learning) nhằm hoàn thành bài báo cáo này, em đã nhận được sự hướng dẫn tận tình, sự quan tâm sâu sắc và những hỗ trợ quý báu từ thầy Phạm Tiến Cường và thầy Vi Anh Quân. Em xin gửi lời cảm ơn chân thành và sâu sắc đến các thầy vì đã luôn đồng hành, định hướng và hỗ trợ em trong suốt quá trình học tập cũng như triển khai đề tài. Những góp ý chuyên môn của các thầy không chỉ giúp em hoàn thiện nội dung bài báo cáo mà còn giúp em hiểu rõ hơn về tư duy giải quyết vấn đề trong lĩnh vực học máy.
 
-Những kiến thức và kinh nghiệm mà thầy truyền đạt không chỉ giúp em hoàn thành tốt bài báo cáo mà còn là nền tảng quan trọng cho quá trình học tập và phát triển trong tương lai. Sự nghiêm túc, nhiệt huyết và tinh thần trách nhiệm của thầy đã trở thành động lực lớn để em nỗ lực hơn trong quá trình nghiên cứu và thực hiện đề tài.
+Trong suốt quá trình thực hiện, em đã được tiếp cận nhiều kiến thức quan trọng liên quan đến các mô hình học sâu, xử lý dữ liệu và ứng dụng trí tuệ nhân tạo trong thực tế. Những kiến thức và kinh nghiệm mà các thầy truyền đạt không chỉ giúp em hoàn thành tốt bài báo cáo hiện tại mà còn là nền tảng vững chắc để em tiếp tục nghiên cứu và phát triển trong tương lai. Đặc biệt, sự nghiêm túc trong giảng dạy, tư duy khoa học rõ ràng và tinh thần trách nhiệm của các thầy đã tạo động lực lớn giúp em nỗ lực hơn trong quá trình thực hiện đề tài.
 
-Mặc dù đã cố gắng hoàn thiện đề tài này một cách tốt nhất, do kiến thức và kinh nghiệm thực tiễn còn hạn chế nên khó tránh khỏi những thiếu sót nhất định. Em rất mong nhận được những ý kiến đóng góp và nhận xét từ thầy để có thể tiếp tục hoàn thiện và nâng cao kiến thức của bản thân.
+Mặc dù đã cố gắng hoàn thiện bài báo cáo một cách tốt nhất trong khả năng của mình, nhưng do hạn chế về kiến thức và kinh nghiệm thực tiễn nên không thể tránh khỏi những thiếu sót. Em rất mong nhận được những ý kiến đóng góp, nhận xét và chỉ dẫn thêm từ các thầy để có thể tiếp tục hoàn thiện sản phẩm nghiên cứu cũng như nâng cao năng lực chuyên môn của bản thân trong thời gian tới.
 
-Lời cuối cùng, em xin kính chúc thầy luôn mạnh khỏe, hạnh phúc và đạt nhiều thành công trong sự nghiệp giảng dạy của mình.
-
+Cuối cùng, em xin kính chúc thầy Phạm Tiến Cường và thầy Vi Anh Quân luôn mạnh khỏe, hạnh phúc và đạt được nhiều thành công trong sự nghiệp giảng dạy và nghiên cứu khoa học. Em xin chân thành cảm ơn các thầy!
 Em xin chân thành cảm ơn!
 \end{acknowledgements}
 
+\clearpage
 
+
+\textbf{Nhóm sinh viên thực hiện}
+
+\vspace{0.3cm}
+
+\textbf{Lớp Kỹ thuật Điện tử và Tin học K68 -- Khoa Vật lý}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tabular}{c l c}
+\hline
+\textbf{STT} & \textbf{Họ và tên -- Mã sinh viên} & \textbf{Tỷ lệ đóng góp (\%)} \\
+\hline
+1 & Nguyễn Tiến Dũng -- 23001585 & 40\\
+2 & Hà Việt Anh -- 23001575 & 35\\
+3 & Cao Văn Đạt -- 23001591 & 25\\
+\hline
+\end{tabular}
+\end{center}
+
+\clearpage
 %----------------------------------------------------------------------------------------
 %	(KHÔNG CHỈNH SỬA PHẦN NÀY)
 %
@@ -192,8 +226,38 @@ Em xin chân thành cảm ơn!
 
 \begin{abbreviations}{ll} % Thêm danh sách tên viết tắt (dưới dạng một bảng có 2 cột)
 
-\textbf{TVT} & \textbf{T}ên \textbf{V}iết \textbf{T}ắt\\
-\textbf{ĐTĐ} & \textbf{Đ}ặt (nó) \textbf{T}ại \textbf{Đ}ây\\
+\textbf{AI} & Artificial Intelligence (Trí tuệ nhân tạo)\\
+\textbf{YOLO} & You Only Look Once\\
+\textbf{Faster R-CNN} & Faster Region-based Convolutional Neural Network\\
+\textbf{RPN} & Region Proposal Network\\
+\textbf{SSD} & Single Shot MultiBox Detector\\
+\textbf{FPN} & Feature Pyramid Network\\
+\textbf{PAN} & Path Aggregation Network\\
+\textbf{RetinaNet} & Retina Network\\
+\textbf{MiDaS} & Monocular Depth Estimation\\
+\textbf{TTS} & Text-to-Speech\\
+\textbf{CNN} & Convolutional Neural Network\\
+\textbf{TAL} & Task-Aligned Learning\\
+\textbf{NMS} & Non-Maximum Suppression\\
+\textbf{DFL} & Distribution Focal Loss\\
+\textbf{ONNX} & Open Neural Network Exchange\\
+\textbf{STAL} & Small-Target-Aware Label Assignment\\
+\textbf{SGD} & Stochastic Gradient Descent\\
+\textbf{MuSGD} & Momentum-based Stochastic Gradient Descent\\
+\textbf{MOT} & Multi-Object Tracking\\
+\textbf{gTTS} & Google Text-to-Speech\\
+\textbf{CLI} & Command Line Interface\\
+\textbf{API} & Application Programming Interface\\
+\textbf{HTTP} & HyperText Transfer Protocol\\
+\textbf{NLP} & Natural Language Processing\\
+\textbf{CPU} & Central Processing Unit\\
+\textbf{CIoU} & Complete Intersection over Union\\
+\textbf{IoU} & Intersection over Union\\
+\textbf{MAE} & Mean Absolute Error\\
+\textbf{MSE} & Mean Squared Error\\
+\textbf{RMSE} & Root Mean Squared Error\\
+\textbf{GPU} & Graphics Processing Unit\\
+\textbf{MD5} & Message-Digest Algorithm 5\\
 
 \end{abbreviations}
 
@@ -252,9 +316,9 @@ Em xin chân thành cảm ơn!
 \include{Chapters/Chapter0}
 \include{Chapters/Chapter1}
 \include{Chapters/Chapter2} 
-%\include{Chapters/Chapter3}
-%\include{Chapters/Chapter4} 
-%\include{Chapters/Chapter5} 
+\include{Chapters/Chapter3}
+\include{Chapters/Chapter4} 
+\include{Chapters/Chapter5} 
 
 
 %----------------------------------------------------------------------------------------

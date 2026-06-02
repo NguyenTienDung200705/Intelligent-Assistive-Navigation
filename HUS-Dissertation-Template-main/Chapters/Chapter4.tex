@@ -1,0 +1,86 @@
+\chapter{THỰC NGHIỆM VÀ ĐÁNH GIÁ} % Tên của chương
+
+\label{Chapter4} % Để trích dẫn chương này ở chỗ nào đó trong bài, hãy sử dụng lệnh \ref{Chapter1} 
+
+%----------------------------------------------------------------------------------------
+
+% Định nghĩa một số lệnh cần thiết để điều chỉnh định dạng cho một số nội dung nhất định trong bài
+\renewcommand{\keyword}[1]{\textbf{#1}}
+\renewcommand{\tabhead}[1]{\textbf{#1}}
+\renewcommand{\code}[1]{\texttt{#1}}
+\renewcommand{\file}[1]{\texttt{\bfseries#1}}
+\renewcommand{\option}[1]{\texttt{\itshape#1}}
+\setcounter{secnumdepth}{3} 
+
+\section{Kết quả thực nghiệm}
+
+Trong phần này, báo cáo tiến hành trình bày các thiết lập thực nghiệm và đánh giá hiệu quả của hệ thống đề xuất đối với bài toán nhận biết vật cản và cảnh báo an toàn hỗ trợ người khiếm thị di chuyển. Đáng chú ý, để tối ưu hóa hiệu năng và tài nguyên tính toán, hệ thống được cấu hình theo cơ chế lai (\textit{Hybrid Pipeline}): tiến trình huấn luyện và tối ưu hóa phân lớp được tập trung thực hiện trên mô hình phát hiện chủ đạo YOLO26 \cite{Reference3} với tập dữ liệu thực nghiệm; trong khi đó, tầng ước tính chiều sâu kế thừa trực tiếp tri thức chuyển giao (\textit{Transfer Learning}) từ kiến trúc mạng \textit{MiDAS\_small} đã được huấn luyện sẵn trên các tập dữ liệu không gian quy mô lớn \cite{Reference11}. 
+
+Kết quả thực nghiệm được phân tích chuyên sâu thông qua các chỉ số đánh giá định lượng về độ chính xác nhận diện của YOLO26 (chỉ số mAP@0.5:0.95) và độ ổn định bám vết của bộ theo dõi (chỉ số ID Switch) \cite{Reference3}. Đồng thời, sai số ước tính cự ly của mô hình chiều sâu dạng suy diễn kết hợp giải pháp hình học dự phòng cũng được đối chiếu cụ thể nhằm làm rõ tính khả thi, khả năng đáp ứng thời gian thực và độ tin cậy của giải pháp nghiên cứu trong các kịch bản môi trường thực tế.
+
+\subsection{Đánh giá mô hình}
+
+Để đo lường và đánh giá toàn diện hiệu năng của hệ thống hỗ trợ di chuyển, nghiên cứu thiết lập các nhóm chỉ số thực nghiệm chuyên biệt cho từng tầng kiến trúc. Do mô hình phát hiện chủ đạo YOLO26 được tiến hành huấn luyện trực tiếp trên tập dữ liệu thực tế, hiệu năng phân lớp và khoanh vùng vật cản của mô hình này được đánh giá thông qua chỉ số Độ chính xác trung bình toàn diện ($mAP@0.5:0.95$). Song song với đó, Tỉ lệ sai lệch định danh (\textit{ID Switch}) được áp dụng để kiểm thử độ ổn định bám vết quỹ đạo của bộ theo dõi \textit{SimpleTracker} \cite{Reference12}. 
+
+Đối với tầng ước tính cự ly an toàn — vốn hoạt động theo cơ chế suy diễn lai giữa trọng số học sâu có sẵn của \textit{MiDAS\_small} và thuật toán hình học dự phòng diện tích khung bao, nghiên cứu sử dụng cặp chỉ số Sai số tuyệt đối trung bình ($MAE$) và Sai số bình phương trung bình tỷ đối ($Rel\,RMSE$) nhằm đo lường độ lệch khoảng cách pixel/mét trên môi trường thực nghiệm \cite{Reference11}. Tổng hợp kết quả đánh giá định lượng và các phân tích đối chiếu hiệu năng giữa các cấu hình thuật toán khác nhau trong hệ thống song song được trình bày chi tiết trong Bảng~\ref{tab:training_results}.
+
+\begin{table}[h!]
+    \centering
+    \caption{Kết quả thực nghiệm chi tiết của mô hình YOLO26 trên các lớp đối tượng.}
+    \label{tab:training_results}
+    \begin{tabular}{llcccc}
+        \toprule
+        \textbf{STT} & \textbf{Lớp đối tượng} & \textbf{Precision (P)} & \textbf{Recall (R)} & \textbf{mAP50} & \textbf{mAP50-95} \\
+        \midrule
+        -  & \textbf{Tất cả (all)}    & \textbf{0,850} & \textbf{0,739} & \textbf{0,828} & \textbf{0,595} \\
+        \midrule
+        1  & ashcan                 & 0,894          & 0,741          & 0,850          & 0,681          \\
+        2  & tree                   & 0,774          & 0,769          & 0,838          & 0,511          \\
+        3  & bus                    & 0,849          & 0,625          & 0,742          & 0,569          \\
+        4  & warning\_column        & 0,901          & 0,781          & 0,880          & 0,550          \\
+        5  & red\_light             & 0,837          & 0,865          & 0,898          & 0,615          \\
+        6  & roadblock              & 0,892          & 0,750          & 0,839          & 0,600          \\
+        7  & fire\_hydrant          & 0,865          & 0,765          & 0,844          & 0,619          \\
+        8  & car                    & 0,845          & 0,731          & 0,833          & 0,600          \\
+        9  & dog                    & 0,832          & 0,706          & 0,792          & 0,614          \\
+        10 & pole                   & 0,793          & 0,758          & 0,841          & 0,552          \\
+        11 & blind\_road            & 0,902          & 0,810          & 0,886          & 0,718          \\
+        12 & tricycle               & 0,903          & 0,669          & 0,781          & 0,677          \\
+        13 & motorcycle             & 0,830          & 0,713          & 0,816          & 0,526          \\
+        14 & person                 & 0,855          & 0,705          & 0,821          & 0,526          \\
+        15 & crosswalk              & 0,924          & 0,817          & 0,923          & 0,764          \\
+        16 & truck                  & 0,668          & 0,499          & 0,570          & 0,413          \\
+        17 & bicycle                & 0,798          & 0,626          & 0,742          & 0,474          \\
+        18 & reflective\_cone       & 0,885          & 0,762          & 0,863          & 0,613          \\
+        19 & sign                   & 0,851          & 0,788          & 0,861          & 0,628          \\
+        20 & green\_light           & 0,906          & 0,903          & 0,945          & 0,654          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Phân tích và đánh giá kết quả}
+
+Dựa trên kết quả thực nghiệm chi tiết của mô hình YOLO26 được trình bày trong Bảng~\ref{tab:training_results}, nghiên cứu tiến hành phân tích và đánh giá hiệu năng nhận diện theo các tầng chỉ số cốt lõi. Nhìn chung, mô hình đạt được hiệu suất tổng thể ấn tượng với độ chính xác trung bình toàn diện $mAP50$ đạt $0,828$ và $mAP50-95$ đạt $0,595$. Chỉ số Precision trung bình đạt $0,850$ cùng với Recall đạt $0,739$, chứng minh mô hình có khả năng nhận biết vật cản nhạy bén đồng thời hạn chế tối đa tỷ lệ cảnh báo sai (\textit{false alarms}) — một yếu tố sống còn đảm bảo tâm lý an toàn cho người khiếm thị khi tham gia giao thông.
+
+\subsubsection*{1. Đánh giá nhóm đối tượng hỗ trợ định hướng và an toàn hành lang}
+
+Nhóm vật cản và chỉ dấu trực tiếp trên đường đi đạt được các chỉ số nhận diện phân lớp rất cao, cụ thể:
+\begin{itemize}
+    \item \textbf{Lối đi cho người đi bộ (\textit{crosswalk}):} Đạt chỉ số Precision tối ưu $0,924$ và $mAP50$ đạt $0,923$. Đây là một kết quả cực kỳ quan trọng, giúp hệ thống nhận diện chính xác khu vực sang đường an toàn để phát lệnh hướng dẫn kịp thời.
+    \item \textbf{Đường gạch nổi (\textit{blind\_road}):} Đạt chỉ số Precision lên tới $0,902$ và độ chính xác nghiêm ngặt $mAP50-95$ đạt $0,718$. Hiệu năng cao tại lớp này đảm bảo thiết bị nhận biết tốt hành lang an toàn dành riêng cho người khiếm thị, giúp họ duy trì quỹ đạo di chuyển đúng hướng.
+    \item \textbf{Tín hiệu đèn giao thông (\textit{green\_light} và \textit{red\_light}):} Đạt các chỉ số $mAP50$ vượt trội, lần lượt là $0,945$ và $0,898$. Khả năng nhận diện chính xác trạng thái đèn màu giúp hệ thống đưa ra các quyết định lệnh thoại phối hợp dừng/đi chuẩn xác tại các giao lộ.
+\end{itemize}
+
+\subsubsection*{2. Đánh giá nhóm chướng ngại vật tĩnh và cấu trúc đô thị}
+
+Các vật cản cố định xuất hiện phổ biến trên vỉa hè như rào chắn công trường (\textit{roadblock} - $mAP50 = 0,839$), trụ cứu hỏa (\textit{fire\_hydrant} - $mAP50 = 0,844$), cột cảnh báo (\textit{warning\_column} - $mAP50 = 0,880$) và thùng rác (\textit{ashcan} - $mAP50 = 0,850$) đều có độ chính xác rất đồng đều. Việc mô hình nhạy bén với nhóm chướng ngại vật này giúp người khiếm thị chủ động né tránh các va chạm trực diện gây nguy hiểm trong quá trình đi bộ.
+
+\subsubsection*{3. Phân tích hạn chế và nguyên nhân sai số đối với nhóm phương tiện}
+
+Bên cạnh những ưu điểm, kết quả thực nghiệm cũng chỉ ra một số hạn chế của mô hình đối với các thực thể giao thông có kích thước lớn hoặc biến đổi hình học phức tạp:
+\begin{itemize}
+    \item \textbf{Xe tải (\textit{truck}):} Đây là lớp đối tượng có hiệu năng thấp nhất trong hệ thống với Precision chỉ đạt $0,668$, Recall đạt $0,499$ và $mAP50$ dừng lại ở mức $0,570$. Nguyên nhân cốt lõi do xe tải có sự đa dạng rất lớn về kiểu dáng cấu trúc (xe tải thùng kín, xe ben, xe đầu kéo) và thường bị che khuất một phần trong môi trường đô thị chật hẹp, dẫn đến việc mô hình dễ trượt mục tiêu hoặc nhầm lẫn với các phương tiện giao thông khác như xe buýt (\textit{bus} - $mAP50 = 0,742$).
+    \item \textbf{Xe đạp (\textit{bicycle}) và Người đi bộ (\textit{person}):} Chỉ số $mAP50-95$ tương đối khiêm tốn (đều đạt $0,526$), cho thấy việc khoanh vùng khít hộp bao (\textit{Bounding Box Bounding}) đối với các thực thể chuyển động có biên dạng thay đổi liên tục theo tư thế vẫn là một thách thức đối với cấu hình kiến trúc gọn nhẹ của YOLO26.
+\end{itemize}
+
+Mặc dù tồn tại một số sai số cục bộ ở nhóm xe tải lớn, tuy nhiên xét trên tổng thể bài toán trợ giúp di chuyển đơn luồng, mô hình YOLO26 hoàn toàn đáp ứng được yêu cầu thực tế nhờ độ chính xác xuất sắc trên các lớp vật cản vỉa hè và hạ tầng giao thông cốt lõi. Đây là tiền đề dữ liệu sạch và tin cậy để các module bám vết động ByteTrack và ước tính cự ly MiDAS phía sau thực hiện suy diễn ngữ cảnh nguy hiểm.

@@ -1,0 +1,580 @@
+\chapter{PHƯƠNG PHÁP} % Tên của chương
+
+\label{Chapter3} % Để trích dẫn chương này ở chỗ nào đó trong bài, hãy sử dụng lệnh \ref{Chapter1} 
+
+%----------------------------------------------------------------------------------------
+
+% Định nghĩa một số lệnh cần thiết để điều chỉnh định dạng cho một số nội dung nhất định trong bài
+\renewcommand{\keyword}[1]{\textbf{#1}}
+\renewcommand{\tabhead}[1]{\textbf{#1}}
+\renewcommand{\code}[1]{\texttt{#1}}
+\renewcommand{\file}[1]{\texttt{\bfseries#1}}
+\renewcommand{\option}[1]{\texttt{\itshape#1}}
+\setcounter{secnumdepth}{3} 
+
+\section{Kiến trúc bài toán}
+
+Kiến trúc bài toán được thiết kế bao gồm năm tầng chức năng cốt lõi hoạt động theo cơ chế xử lý tuần tự. Dữ liệu được truyền qua từng tầng, trong đó mỗi tầng thực hiện một nhóm tác vụ chuyên biệt và cung cấp đầu ra cho tầng kế tiếp. Kiến trúc này bảo đảm tính phân tách chức năng rõ ràng, nâng cao khả năng tái sử dụng và mở rộng, đồng thời hỗ trợ tối ưu hóa tài nguyên tính toán.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter3/Chapter3_1.png}
+    \caption{Kiến trúc tổng thể của mô hình}
+    \label{kientruc:chapter3}
+\end{figure}
+
+\subsection*{\textbf{\textup{1. Data Acquisition Layer}}}
+Đây là tầng đầu vào (Input) của toàn bộ kiến trúc, chịu trách nhiệm tiếp nhận và tiền xử lý sơ bộ các nguồn dữ liệu thị giác. Giải pháp hỗ trợ đa dạng các nguồn đầu vào bao gồm:
+\begin{itemize}
+    \item \textbf{Hình ảnh tĩnh (Image):} Các tập tin ảnh có sẵn phục vụ kiểm thử đơn lẻ.
+    \item \textbf{Video:} Các luồng video được ghi hình trước phục vụ cho việc đánh giá độ ổn định.
+    \item \textbf{Camera:} Luồng dữ liệu video trực tiếp từ thiết bị ngoại vi (Webcam, Camera IP) nhằm đáp ứng các ứng dụng thời gian thực.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter3/Chapter3_4.png}
+    \caption{Data Acquisition Layer}
+    \label{Data Acquisition Layer:chapter3}
+\end{figure}
+
+\subsection*{\textbf{\textup{2. Backend Layer}}}
+Đóng vai trò là trung tâm điều phối dữ liệu đầu vào và quản lý luồng công việc của chương trình.
+\begin{itemize}
+    \item \textbf{FastAPI Backend:} Sử dụng framework FastAPI (Python) nhờ vào hiệu năng cao, hỗ trợ xử lý bất đồng bộ (Asynchronous) mạnh mẽ. Tầng này chịu trách nhiệm nhận luồng dữ liệu từ tầng thu thập, thiết lập các kết nối API, truyền dữ liệu đến tầng nhận thức một cách mượt mà và quản lý trạng thái vận hành.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter3/Chapter3_5.png}
+    \caption{Backend Layer}
+    \label{Backend Layer:chapter3}
+\end{figure}
+
+\subsection*{\textbf{\textup{3. Perception Layer}}}
+Đây là mô-đun xử lý chính của thị giác máy tính (Computer Vision), hoạt động theo mô hình xử lý song song hai nhánh để khai thác tối đa thông tin từ môi trường:
+\begin{itemize}
+    \item \textbf{Nhánh phát hiện và theo dõi đối tượng:}
+    \begin{itemize}
+        \item \textit{YOLO26 Detector:} Mô hình học sâu chịu trách nhiệm phát hiện vật thể (Object Detection) trong từng khung hình với tốc độ cao và độ chính xác tối ưu \cite{Reference3}.
+        \item \textit{ByteTrack Tracker:} Nhận kết quả từ YOLO26 để thực hiện gán ID và theo dõi chuyển động (Object Tracking) của các đối tượng qua từng khung hình, giúp duy trì tính liên tục của dữ liệu \cite{Reference12}.
+    \end{itemize}
+    \item \textbf{Nhánh ước tính chiều sâu:}
+    \begin{itemize}
+        \item \textit{MiDAS Depth Estimation:} Hoạt động độc lập và song song với nhánh phát hiện. Mô hình này thực hiện ước tính chiều sâu đơn mục (Monocular Depth Estimation), chuyển đổi ảnh 2D thành bản đồ độ sâu (Depth Map) để xác định khoảng cách tương đối của các vật thể xung quanh \cite{Reference11}.
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter3/Chapter3_6.png}
+    \caption{Perception Layer}
+    \label{Perception Layer:chapter3}
+\end{figure}
+
+\subsection*{\textbf{\textup{4. Decision Layer}}}
+Sau khi nhận được thông tin giàu ngữ cảnh từ Perception Layer, tầng này sẽ tổng hợp và đưa ra các phản hồi thông minh:
+\begin{itemize}
+    \item \textbf{Bộ dung hợp (Fusion Engine):} Tổng hợp dữ liệu từ hai nhánh (tọa độ vật thể từ ByteTrack và bản đồ độ sâu từ MiDAS) để đồng bộ hóa vị trí không gian 3D của từng đối tượng cần quan tâm.
+    \item \textbf{Bộ phân tích nguy hiểm (Danger Analyzer):} Dựa trên dữ liệu đã dung hợp, bộ phân tích áp dụng các thuật toán hoặc quy tắc logic để đánh giá mức độ nguy hiểm (ví dụ: vật thể quá gần, có nguy cơ va chạm).
+    \item \textbf{Công cụ chuyển văn bản thành giọng nói (TTS Engine - Text-to-Speech):} Chuyển đổi các cảnh báo hoặc phân tích dạng văn bản thành tín hiệu âm thanh/giọng nói để chuẩn bị phản hồi cho người dùng.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter3/Chapter3_7.png}
+    \caption{Decision Layer}
+    \label{Decision Layer:chapter3}
+\end{figure}
+
+\subsection*{\textbf{\textup{5. Application Layer}}}
+\begin{itemize}
+    \item \textbf{React Frontend:} Tầng giao diện người dùng (UI/UX). Được xây dựng trên thư viện React, chịu trách nhiệm nhận kết quả xử lý cuối cùng từ nền tảng hậu đài, hiển thị luồng video được trực quan hóa (vẽ khung bao bounding box, hiển thị khoảng cách) và phát ra các cảnh báo âm thanh, mang lại trải nghiệm tương tác trực quan và mượt mà cho người dùng cuối.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter3/Chapter3_8.png}
+    \caption{Application Layer}
+    \label{Application Layer:chapter3}
+\end{figure}
+
+
+\section{Dữ liệu thực nghiệm}
+
+Để xây dựng tập dữ liệu phục vụ quá trình huấn luyện và đánh giá, nghiên cứu sử dụng bộ dữ liệu WOTR \cite{Reference20} làm nguồn dữ liệu nền tảng, đồng thời bổ sung tập dữ liệu thực tế do nhóm tự thu thập để phù hợp với ngữ cảnh ở Việt Nam. Trong khi WOTR cung cấp các mẫu dữ liệu đa dạng về đối tượng, bối cảnh và điều kiện quan sát, dữ liệu tự xây dựng phản ánh trực tiếp môi trường hoạt động mục tiêu của hệ thống. Sự kết hợp này cho phép mô hình vừa khai thác được tính phong phú của bộ dữ liệu công khai, vừa học được các đặc trưng đặc thù của các tình huống thực tế, từ đó nâng cao độ chính xác và độ tin cậy khi triển khai.
+
+\subsection{Đặc điểm bộ dữ liệu}
+Bộ dữ liệu WOTR \cite{Reference20} bao gồm các tập hợp hình ảnh và chuỗi video chất lượng cao, mô phỏng góc nhìn thực tế từ các thiết bị camera hành trình và camera ngoại vi. Các đặc trưng cốt lõi của bộ dữ liệu bao gồm:
+\begin{itemize}
+    \item \textbf{Sự đa dạng về đối tượng:} Chứa hàng ngàn khung hình được gán nhãn chi tiết với nhiều lớp đối tượng phổ biến trong môi trường giao thông và đời sống (người đi bộ, phương tiện giao thông, chướng ngại vật).
+    \item \textbf{Đa dạng điều kiện môi trường:} Dữ liệu được thu thập dưới nhiều điều kiện ánh sáng khác nhau (ban ngày, ban đêm, ngược sáng) và các trạng thái thời tiết phức tạp, giúp tăng cường độ bền vững (robustness) cho các mô hình học sâu.
+    \item \textbf{Thông tin chiều sâu tích hợp:} Bên cạnh các nhãn khung bao (bounding box) cho bài toán phát hiện, bộ dữ liệu còn cung cấp thông tin ánh xạ pixel tương ứng với khoảng cách thực tế, phục vụ trực tiếp cho việc kiểm định nhánh ước tính chiều sâu đơn mục.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figures/Chapter3/Chapter3_3.png}
+    \caption{Hình ảnh minh họa bô dữ liệu WOTR ~\cite{Reference20}}
+    \label{hinhminhhoa:chapter3}
+\end{figure}
+
+Bên cạnh việc sử dụng các bộ dữ liệu công khai, nhóm nghiên cứu còn xây dựng một tập dữ liệu thực tế nhằm nâng cao khả năng thích nghi của mô hình đối với môi trường triển khai. Dữ liệu được thu thập trực tiếp bằng cách chụp ảnh tại nhiều địa điểm khác nhau, bao gồm các khu vực đường phố, khuôn viên trường học và không gian công cộng. Quá trình thu thập được thực hiện trong nhiều điều kiện khác nhau về ánh sáng, mật độ giao thông và bối cảnh môi trường nhằm bảo đảm tính đa dạng của dữ liệu.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figures/Chapter 2/Chapter2_11.png}
+    \caption{Hình ảnh dữ liệu được thu thập}
+    \label{fig:dulieuthuthap}
+\end{figure}
+
+Sau khi thu thập, toàn bộ hình ảnh được rà soát và tiến hành gán nhãn thủ công cho các đối tượng quan tâm. Việc đánh nhãn được thực hiện dựa trên các tiêu chuẩn thống nhất nhằm bảo đảm tính chính xác và nhất quán của dữ liệu huấn luyện. Tập dữ liệu tự xây dựng này đóng vai trò bổ sung cho các bộ dữ liệu công khai, giúp mô hình học được những đặc trưng gần với điều kiện vận hành thực tế, từ đó nâng cao hiệu quả nhận diện, theo dõi đối tượng và đánh giá mức độ nguy hiểm của hệ thống.
+
+\subsection{Tiền xử lý dữ liệu}
+
+Quá trình xây dựng tập dữ liệu được thực hiện trên hai nguồn dữ liệu gồm bộ dữ liệu WOTR và tập dữ liệu thực tế do nhóm tự thu thập. Đối với bộ dữ liệu WOTR \cite{Reference20}, các ảnh đã được cung cấp kèm theo nhãn đối tượng, vì vậy nhóm chỉ tiến hành kiểm tra tính đầy đủ của dữ liệu, chuẩn hóa cấu trúc thư mục và chuyển đổi sang định dạng phù hợp với quá trình huấn luyện mô hình.
+
+Đối với tập dữ liệu tự thu thập, nhóm tiến hành chụp ảnh tại nhiều địa điểm và trong các điều kiện môi trường khác nhau nhằm bảo đảm tính đa dạng của dữ liệu. Sau khi thu thập, các ảnh được rà soát để loại bỏ những mẫu không đạt chất lượng, chẳng hạn như ảnh bị mờ, thiếu sáng hoặc chứa quá ít thông tin hữu ích.
+
+Tiếp theo, quá trình gán nhãn được thực hiện thủ công trên nền tảng Roboflow như Hình \ref{fig:gannhan}. Đối với mỗi ảnh, các đối tượng quan tâm được xác định và khoanh vùng bằng khung giới hạn (bounding box), đồng thời được gán vào lớp tương ứng theo hệ thống nhãn đã xây dựng. Việc gán nhãn thủ công giúp bảo đảm độ chính xác của dữ liệu, đặc biệt đối với các đối tượng xuất hiện trong những bối cảnh thực tế đặc thù mà các bộ dữ liệu công khai chưa phản ánh đầy đủ.
+Sau khi hoàn thành quá trình gán nhãn, dữ liệu được xuất dưới định dạng YOLO và hợp nhất với bộ dữ liệu WOTR để tạo thành tập dữ liệu huấn luyện thống nhất.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Figures/Chapter3/Chapter3_2.png}
+    \caption{Gán nhãn dữ liệu}
+    \label{fig:gannhan}
+\end{figure}
+
+\subsection{Đặc trưng dữ liệu}
+
+Để đánh giá đặc điểm của tập dữ liệu phục vụ quá trình huấn luyện và kiểm thử mô hình, nghiên cứu tiến hành phân tích sự phân bố của các lớp đối tượng trên tập dữ liệu tổng hợp, được xây dựng từ bộ dữ liệu WOTR \cite{Reference20} kết hợp với dữ liệu thực tế do nhóm tự thu thập và gán nhãn thủ công. Việc thống kê số lượng mẫu của từng lớp đối tượng giúp đánh giá mức độ đa dạng, tính cân bằng của dữ liệu cũng như khả năng bao quát các tình huống thực tế mà hệ thống có thể gặp phải khi triển khai. Kết quả phân bố số lượng nhãn (instances) của từng lớp đối tượng trong tập dữ liệu thông qua Bảng \ref{tab:wotr_classes_instances}.
+
+\begin{table}[H] % Sử dụng [H] viết hoa để ép vị trí cố định
+    \centering
+    \caption{Thống kê số lượng nhãn chi tiết theo từng lớp đối tượng.}
+    \label{tab:wotr_classes_instances}
+    \begin{tabular}{clcclc}
+        \toprule
+        \textbf{STT} & \textbf{Lớp đối tượng} & \textbf{Số lượng nhãn} & \textbf{STT} & \textbf{Lớp đối tượng} & \textbf{Số lượng nhãn} \\
+        \midrule
+        1  & person          & 28.062 & 11 & green\_light    & 3.981 \\
+        2  & pole            & 24.877 & 12 & red\_light      & 3.965 \\
+        3  & car             & 22.055 & 13 & roadblock       & 3.437 \\
+        4  & tree            & 18.063 & 14 & sign            & 2.654 \\
+        5  & motorcycle      & 9.712  & 15 & truck           & 2.759 \\
+        6  & warning\_column & 8.323  & 16 & reflective\_cone& 2.301 \\
+        7  & crosswalk       & 6.829  & 17 & ashcan          & 2.282 \\
+        8  & bicycle         & 4.868  & 18 & blind\_road     & 1.960 \\
+        9  & bus             & 1.430  & 19 & tricycle        & 1.278 \\
+        10 & fire\_hydrant   & 1.120  & 20 & dog             & 818   \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Bộ dữ liệu bao gồm các lớp đối tượng đặc trưng trong môi trường đô thị và giao thông công cộng. Trong đó, các thực thể có tần suất xuất hiện cao nhất bao gồm: \textit{person} (người đi bộ - hơn 28.000 nhãn), \textit{pole} (cột đèn/cột điện - gần 24.000 nhãn), \textit{car} (ô tô - hơn 22.000 nhãn), và \textit{tree} (cây cối - hơn 18.000 nhãn). Ngoài ra, các đối tượng bổ trợ giao thông như \textit{motorcycle}, \textit{warning\_column}, \textit{bicycle}, \textit{sign}, \textit{green\_light}, \textit{red\_light},... cũng xuất hiện với mật độ phân tán, tạo nên một ma trận ngữ cảnh vô cùng phong phú.
+
+\subsection{Phân chia dữ liệu phục vụ huấn luyện}
+Quá trình chuẩn bị dữ liệu được thực hiện nghiêm ngặt nhằm tránh hiện tượng quá khớp (overfitting) và đảm bảo tính khách quan khi đánh giá giải pháp:
+\begin{itemize}
+    \item \textbf{Tập huấn luyện (Training Set - 80\%):} Được sử dụng để tối ưu hóa trọng số của mô hình YOLO26 Detector và tinh chỉnh các tham số nhận diện.
+    \item \textbf{Tập kiểm thử (Validation Set - 20\%):} Sử dụng để đánh giá liên tục trong quá trình huấn luyện, hỗ trợ điều chỉnh các siêu tham số (hyperparameters).
+\end{itemize}
+
+\begin{table}[h]
+    \centering
+    \caption{Thống kê phân chia bộ dữ liệu.}
+    \label{tab:wotr_dataset}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Phân loại tập dữ liệu} & \textbf{Tỷ lệ (\%)} & \textbf{Số lượng ảnh} & \textbf{Số lượng nhãn} \\
+        \midrule
+        Tập huấn luyện (Train)       & 80\%               & 11142                   & 11142                    \\
+        Tập kiểm thử (Validation)    & 20\%               & 2786                   & 2786                    \\
+        \midrule
+        \textbf{Tổng cộng}           & \textbf{100\%}     & \textbf{13928}          & \textbf{13928}           \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Hàm mất mát}
+
+\subsection{Hàm mất mát của YOLO26}
+
+Hàm mất mát cốt lõi của YOLO26 được thiết kế lại hoàn toàn cho kiến trúc End-to-End (loại bỏ hậu xử lý NMS và module DFL) \cite{Reference3}. Tổng hàm mất mát $L_{total}$ là sự kết hợp có trọng số động giữa hàm phân loại ($L_{cls}$) và hàm hồi quy hộp bao ($L_{box}$):
+
+\begin{equation}
+L_{total}(t) = \lambda_{cls}(t) \cdot L_{cls} + \lambda_{box}(t) \cdot L_{box}
+\end{equation}
+
+Trong đó, $t$ là tiến trình huấn luyện (epoch hiện tại). Khác với các thế hệ trước, YOLO26 áp dụng cơ chế \textbf{ProgLoss (Progressive Loss Balancing)}: trọng số không cố định mà thay đổi theo thời gian. Ở giai đoạn đầu, mạng ưu tiên học phân loại đặc trưng ($\lambda_{cls}$ lớn), và về cuối quá trình, hệ thống tự động dồn trọng số để tinh chỉnh ranh giới tọa độ ($\lambda_{box}$ lớn) \cite{Reference3}.
+
+\subsection*{1. Hàm phân loại với Nhãn mục tiêu mềm}
+
+Để tối ưu hóa khả năng nhận diện các vật thể nhỏ (\textit{Small-Target-Aware}), YOLO26 không sử dụng nhãn cứng (đúng/sai tuyệt đối) mà dùng nhãn mềm $y_i$ để chấm điểm chất lượng thực tế của từng khung dự đoán:
+
+\begin{equation}
+L_{cls} = - \frac{1}{N} \sum_{i=1}^{N} \left[ y_i \cdot (1 - \hat{p}_i)^\gamma \log(\hat{p}_i) + (1 - y_i) \cdot \hat{p}_i^\gamma \log(1 - \hat{p}_i) \right]
+\end{equation}
+
+\begin{itemize}
+    \item $N$: Tổng số lượng mẫu dữ liệu.
+    \item $\hat{p}_i$: Xác suất dự đoán của mô hình.
+    \item $y_i$: Điểm số mục tiêu mềm do cơ chế \textbf{STAL (Soft Target Assignment Loss)} gán tự động ($y_i \in [0, 1]$).
+    \item $\gamma$: Hệ số hội tụ giúp giảm nhiễu từ các mẫu nền (mẫu âm tính dễ).
+\end{itemize}
+
+\subsection*{2. Hàm hồi quy hộp bao trực tiếp}
+
+Bằng việc loại bỏ hoàn toàn module DFL (\textit{Distribution Focal Loss}) nhằm giảm tải tính toán cho các thiết bị Edge CPU, việc tối ưu tọa độ trong YOLO26 phụ thuộc hoàn toàn vào \textbf{CIoU Loss (Complete IoU)}. Hàm này ép mô hình phải học đồng thời 3 yếu tố: diện tích giao nhau, khoảng cách tâm và tỷ lệ khung hình:
+
+\begin{equation}
+L_{box} = 1 - IoU + \frac{\rho^2(\mathbf{b}, \mathbf{b}^{gt})}{c^2} + \alpha v
+\end{equation}
+
+\begin{itemize}
+    \item $IoU$: Tỷ lệ phần diện tích giao nhau trên phần hợp nhất.
+    \item $\rho^2(\mathbf{b}, \mathbf{b}^{gt})$: Bình phương khoảng cách giữa hai tâm của hộp dự đoán và hộp chuẩn (Ground Truth).
+    \item $c$: Chiều dài đường chéo của hộp đóng kín nhỏ nhất chứa cả hai hộp.
+    \item $\alpha v$: Thành phần phạt độ lệch tỷ lệ khung hình (\textit{Aspect Ratio}), ép hộp dự đoán phải ôm sát vật thể thực tế.
+\end{itemize}
+
+\subsection{Hàm mất mát của MiDAS}
+Mô hình MiDAS (Monocular Depth Estimation) chịu trách nhiệm dự đoán bản đồ độ sâu từ ảnh hai chiều ($2D$) tại nhánh cấu trúc song song. Do các tập dữ liệu ảnh chiều sâu thực tế được thu thập từ nhiều nguồn thiết bị (như cảm biến LiDAR, Camera Stereo, hoặc cấu trúc cấu tạo từ đồ họa máy tính) có sự sai khác lớn về dải đo, hàm mất mát thông thường như MSE hay MAE sẽ không thể hội tụ. 
+
+Hàm mất mát của MiDaS sử dụng cơ chế bất biến đối với phép co giãn tỷ lệ (scale) và dịch chuyển (shift), giúp giảm ảnh hưởng của sự khác biệt về thang đo độ sâu giữa các tập dữ liệu \cite{Reference11}. Hàm mất mát này được xây dựng từ hai thành phần toán học chính:
+
+\subsubsection*{\textit{a) Hàm mất mát chiều sâu bất biến}}
+Trước khi tính toán độ sai lệch, các bản đồ chiều sâu dự đoán $d$ và bản đồ chiều sâu thực tế (ground-truth) $d^*$ được đưa về một không gian chuẩn hóa chung thông qua phép biến đổi triệt tiêu sự ảnh hưởng của tỷ lệ ($s$) và độ dịch chuyển ($t$). Hàm mất mát được định nghĩa bằng công thức:
+
+\begin{equation}
+    L_{ssi}(\hat{d}, \hat{d}^*) = \frac{1}{2N} \sum_{i=1}^{N} \left| \hat{d}_i - \hat{d}^*_i \right|
+\end{equation}
+
+Trong đó, $N$ là tổng số pixel có nhãn hợp lệ trên ảnh. Bản đồ chiều sâu chuẩn hóa $\hat{d}$ của một biểu diễn chiều sâu $d$ được tính toán thông qua việc tối ưu hóa hai tham số $s$ và $t$ bằng cách giải hệ thức bình phương tối thiểu để tối thiểu hóa khoảng cách thực tế:
+
+\begin{equation}
+    \hat{d} = \frac{d - t}{s}
+\end{equation}
+
+Các tham số chuẩn hóa cấu trúc $(s, t)$ được xác định trực tiếp theo phân phối của từng khung hình cụ thể như sau:
+
+\begin{equation}
+    t(d) = \text{median}(d)
+\end{equation}
+\begin{equation}
+    s(d) = \frac{1}{N} \sum_{i=1}^{N} \left| d_i - t(d) \right|
+\end{equation}
+
+Việc sử dụng giá trị trung vị (\textit{median}) và độ sai lệch tuyệt đối trung bình giúp hàm mất mát bền vững hơn đối với các điểm dữ liệu dị biệt (\textit{outliers}) xuất hiện tại các ranh giới xa của ảnh.
+
+\subsubsection*{\textit{b) Hàm mất mát độ dốc đa tỷ lệ}}
+Để đảm bảo bản đồ chiều sâu dự đoán có độ sắc nét cao tại biên giới của các thực thể (tránh hiện tượng nhòe biên dạng vật thể), MiDAS tích hợp thêm hàm mất mát dựa trên độ dốc hình học (gradient) của ảnh trên nhiều cấp độ phân giải (\textit{multi-scale}):
+
+\begin{equation}
+    L_{reg}(\hat{d}, \hat{d}^*) = \frac{1}{2N} \sum_{k=1}^{K} \sum_{i=1}^{N} \left( \left| \nabla_x R_i^k \right| + \left| \nabla_y R_i^k \right| \right)
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $R_i = \hat{d}_i - \hat{d}^*_i$ là sai số chiều sâu đã chuẩn hóa tại vị trí pixel $i$.
+    \item $\nabla_x$ và $\nabla_y$ tương ứng là toán tử tính đạo hàm không gian (độ dốc) theo trục hoành và trục tung để xác định biên cạnh cấu trúc.
+    \item $k$ đại diện cho cấp độ phân giải trong cấu trúc kim tự tháp ảnh đa quy mô ($K$ tầng), giúp mô hình học được cả đặc trưng biên cạnh kích thước lớn (gần) lẫn các chi tiết biên nhỏ (xa).
+\end{itemize}
+
+\subsubsection*{\textit{c) Hàm mất mát tổng hợp của cấu trúc MiDAS}}
+Hàm mất mát cuối cùng dùng để cập nhật trọng số cho mạng nơ-ron tích chập của nhánh ước tính chiều sâu là sự kết hợp tuyến tính của hai thành phần trên theo tỷ lệ trọng số $\alpha$:
+
+\begin{equation}
+    Loss_{MiDAS} = L_{ssi}(\hat{d}, \hat{d}^*) + \alpha L_{reg}(\hat{d}, \hat{d}^*)
+\end{equation}
+
+Trong các cấu hình thực nghiệm tiêu chuẩn tham số $\alpha$ thường được thiết lập bằng $0.5$. Sự kết hợp này ép mô hình vừa phải tối ưu khoảng cách chiều sâu tương đối toàn cục, vừa giữ được cấu trúc hình học $3D$ sắc nét của vật thể, tạo điều kiện thuận lợi cho bộ dung hợp dữ liệu (\textit{Fusion Engine}) tính toán không gian chính xác.
+
+\section{Huấn luyện mô hình}
+Quá trình huấn luyện mô hình được thực hiện trên nền tảng điện toán đám mây Google Colab sử dụng bộ gia tốc đồ họa phần cứng GPU Tesla T4 ($14.913 \text{ MiB}$ VRAM) và thư viện Ultralytics YOLO. Tập dữ liệu WOTR được sử dụng để huấn luyện mô hình phát hiện 20 lớp đối tượng và thành phần hạ tầng giao thông thường gặp trong môi trường đô thị, bao gồm người đi bộ, phương tiện giao thông, đèn tín hiệu, vạch qua đường, chướng ngại vật và các vật thể hỗ trợ định hướng.
+
+Trong giai đoạn tiền xử lý, toàn bộ ảnh đầu vào được tự động thay đổi kích thước về $640 \times 640$ pixel theo cơ chế mặc định của cấu trúc YOLO nhằm đảm bảo tính đồng nhất dữ liệu và tối ưu hiệu năng huấn luyện. Các phép tăng cường dữ liệu (\textit{Data Augmentation}) tích hợp sẵn của Ultralytics YOLO được áp dụng đầy đủ nhằm cải thiện khả năng tổng quát hóa của mô hình trước các điều kiện môi trường phức tạp khác nhau. Các siêu tham số cấu hình huấn luyện chi tiết được tổng hợp cụ thể tại Bảng \ref{tab:hyperparameters}.
+
+\begin{table}[h]
+    \centering
+    \caption{Cấu hình thông số huấn luyện mô hình YOLO26.}
+    \label{tab:hyperparameters}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Siêu tham số} & \textbf{Giá trị cấu hình thực nghiệm} \\
+        \midrule
+        Kiến trúc mô hình             & YOLO26 \\
+        Phần cứng huấn luyện          & GPU Tesla T4 15GB \\
+        Số lớp đối tượng              & 20 \\
+        Kích thước ảnh đầu vào        & $640 \times 640$ pixel \\
+        Epochs                        & 30 \\
+        Bộ tối ưu hóa                 & MuSGD \\
+        Hàm mất mát                   & Box Loss + Classification Loss \\
+        Kích thước Batch size         & 16 \\
+        Chiến lược đánh giá           & Sau mỗi chu kỳ (\textit{per epoch}) \\
+        Chỉ số lựa chọn mô hình       & mAP@0.5:0.95 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Mô hình được huấn luyện dựa trên bài toán phát hiện đối tượng (\textit{Object Detection}). Trong quá trình tối ưu hóa trọng số mạng, hàm mất mát tổng hợp được cấu thành từ hai thành phần toán học chính:
+\begin{itemize}
+    \item \textbf{Box Loss ($Loss_{box}$):} Đánh giá sai số hình học (tọa độ, khoảng cách) giữa hộp giới hạn dự đoán (\textit{bounding box}) và hộp giới hạn thực tế (\textit{ground truth}).
+    \item \textbf{Classification Loss ($Loss_{cls}$):} Đánh giá khả năng phân loại chính xác các thực thể vào đúng lớp đối tượng mục tiêu.
+\end{itemize}
+
+Hiệu năng nhận thức của mô hình được đánh giá độc lập trên tập kiểm thử thông qua các chỉ số đo lường tiêu chuẩn bao gồm:
+\begin{itemize}
+    \item \textbf{Precision (P):} Tỷ lệ đối tượng dự đoán chính xác trên tổng số các dự đoán mà mô hình đưa ra.
+    \item \textbf{Recall (R):} Tỷ lệ các đối tượng thực tế ngoài môi trường được mô hình phát hiện thành công.
+    \item \textbf{mAP@0.5:} Chỉ số trung bình độ chính xác (\textit{mean Average Precision}) trên tất cả các lớp đối tượng xét tại ngưỡng giao cắt IoU (\textit{Intersection over Union}) bằng $0.5$.
+    \item \textbf{mAP@0.5:0.95:} Chỉ số đánh giá tổng quát và nghiêm ngặt nhất khi tính toán trung bình mAP trên dải ngưỡng IoU lũy tiến từ $0.5$ đến $0.95$ với bước nhảy $0.05$.
+\end{itemize}
+
+\section{Nguyên lý hoạt động của các phương pháp xử lý hỗ trợ điều hướng}
+
+\subsection{Phương pháp theo dõi đa đối tượng ByteTrack}
+
+\subsubsection*{1. Phương pháp theo dõi đối tượng dựa trên đặc trưng động}
+
+Trong các kịch bản giao thông phức tạp, việc chỉ phát hiện đối tượng tĩnh tại từng khung hình độc lập thông qua mô hình YOLO26 là chưa đủ để phân tích hành vi nguy hiểm. Do đó, hệ thống tích hợp thêm mô hình theo dõi đối tượng tuyến tính (\textit{SimpleTracker}) nhằm gán nhãn định danh nhất quán (\textit{Persistent ID}), đồng thời ước tính vận tốc và hướng chuyển động của các thực thể xung quanh người khiếm thị.
+
+\subsubsection*{2. Cơ chế liên kết thực thể dựa trên khoảng cách Euclide}
+
+Tại mỗi khung hình thứ $k$, mô hình phát hiện YOLO26 trả về một tập hợp các khung bao dự đoán. Bộ theo dõi tiến hành trích xuất tọa độ tâm hình học (\textit{Centroid}) của từng đối tượng:
+
+\begin{equation}
+    C_j = \left( x_j, y_j \right) = \left( x_{\text{min}} + \frac{w}{2}, \, y_{\text{min}} + \frac{h}{2} \right)
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $C_j$: Tọa độ không gian hai chiều tâm của khung bao thứ $j$.
+    \item $x_j, y_j$: Tọa độ pixel tâm hình học theo trục ngang và trục dọc của ảnh.
+    \item $x_{\text{min}}, y_{\text{min}}$: Tọa độ pixel góc trên bên trái của hộp giới hạn đối tượng.
+    \item $w, h$: Chiều rộng (\textit{width}) và chiều cao (\textit{height}) tương ứng của hộp giới hạn.
+\end{itemize}
+
+Để liên kết các tâm mới phát hiện $C_{\text{inp}}$ với danh sách các đối tượng đang được quản lý từ khung hình trước $C_{\text{obj}}$, hệ thống áp dụng thuật toán so khớp lân cận gần nhất (\textit{Nearest Neighbor Matching}) dựa trên ma trận khoảng cách Euclide không gian $2D$:
+
+\begin{equation}
+    d(C_{\text{obj}}, C_{\text{inp}}) = \sqrt{(x_{\text{obj}} - x_{\text{inp}})^2 + (y_{\text{obj}} - y_{\text{inp}})^2}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $d(C_{\text{obj}}, C_{\text{inp}})$: Khoảng cách không gian $2D$ tính bằng đơn vị pixel giữa tâm vết cũ và tâm phát hiện mới.
+    \item $x_{\text{obj}}, y_{\text{obj}}$: Tọa độ tâm của vết đối tượng đã được đăng ký và lưu vết trong bộ đệm lịch sử.
+    \item $x_{\text{inp}}, y_{\text{inp}}$: Tọa độ tâm của đối tượng mới được trích xuất tại khung hình hiện tại.
+\end{itemize}
+
+Quá trình tối ưu hóa liên kết cặp được thực hiện lặp qua từng thực thể, điều kiện để một đối tượng được xác định là trùng khớp với vết cũ là khoảng cách $d$ phải nhỏ hơn ngưỡng giới hạn thực nghiệm (\textit{max\_distance} = $120,0$ pixel):
+
+\begin{equation}
+    d(C_{\text{obj}}, C_{\text{inp}}) < d_{\text{max}}
+\end{equation}
+
+Trong đó, $d_{\text{max}}$ đại diện cho bán kính quét giới hạn tối đa cho phép liên kết vết giữa hai khung hình liên tiếp để tránh hiện tượng gán nhầm định danh cho các thực thể khác nhau nằm liền kề.
+
+\subsubsection*{3. Cơ chế quản lý vòng đời đối tượng (Register and Deregister)}
+
+Để đối phó với hiện tượng vật thể bị che khuất tạm thời hoặc mô hình nhận diện bị trượt khung hình (\textit{false negatives}), bộ theo dõi thiết lập một cơ chế quản lý trạng thái động dựa trên biến đếm mất dấu (\textit{disappeared}):
+
+\begin{itemize}
+    \item \textbf{Đăng ký mới (\textit{Register}):} Các tâm dữ liệu đầu vào không trùng khớp với bất kỳ vết theo dõi sẵn có nào sẽ được coi là thực thể mới xuất hiện, hệ thống tự động tăng biến chỉ mục $\text{ID}_{\text{next}} = \text{ID}_{\text{next}} + 1$ và khởi tạo bộ đệm lịch sử hành trình.
+    \item \textbf{Duy trì và Xóa bỏ (\textit{Deregister})} Tại mỗi khung hình, nếu một định danh ID không tìm thấy thực thể liên kết, biến số khung hình mất dấu của ID đó sẽ tăng thêm 1 ($t_{\text{miss}} = t_{\text{miss}} + 1$). Nếu vượt quá ngưỡng chịu tải (\textit{max\_disappeared} = $30$ khung hình, tương đương 1 giây trên luồng video), thực thể này sẽ bị xóa hoàn toàn khỏi bộ nhớ quản lý nhằm giải phóng tài nguyên.
+\end{itemize}
+
+\subsubsection*{4. Mô hình phân tích trạng thái động và xu hướng chuyển động}
+
+Sau khi đồng bộ hóa định danh thành công, bộ theo dõi trích xuất một cửa sổ lịch sử gồm $6$ vị trí gần nhất ($pts = [C_{k-5}, C_{k-4}, \dots, C_{k}]$) nhằm tính toán vectơ dịch chuyển trung bình trên hai trục tọa độ:
+
+\begin{equation}
+    \Delta x = \frac{1}{M-1} \sum_{i=1}^{M-1} \left( x_{i+1} - x_i \right), \quad \Delta y = \frac{1}{M-1} \sum_{i=1}^{M-1} \left( y_{i+1} - y_i \right)
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $\Delta x, \Delta y$: Độ dịch chuyển pixel trung bình theo thời gian của đối tượng trên trục ngang và trục dọc.
+    \item $M$: Kích thước độ dài của cửa sổ trích xuất chuỗi điểm hành trình cục bộ ($M = 6$).
+    \item $x_i, y_i$: Tọa độ không gian của tâm đối tượng tại vị trí thứ $i$ nằm trong chuỗi đệm hành trình.
+\end{itemize}
+
+Từ các giá trị vi phân không gian này, hệ thống rút ra hai thông tin ngữ cảnh quan trọng phục vụ phân tích:
+
+\begin{itemize}
+    \item[\textbf{a)}] \textbf{Hướng chuyển động tương đối (\textit{Direction}):} Do đặc trưng phối cảnh góc nhìn của camera đeo trên người, sự thay đổi của tọa độ dọc ($\Delta y$) phản ánh trực tiếp xu hướng khoảng cách. Quy luật logic được định nghĩa:
+    \begin{equation}
+        \text{Direction} = \begin{cases} 
+            \text{Approaching (Đang tiến lại gần)}, & \text{nếu } \Delta y > 3 \\
+            \text{Receding (Đang đi ra xa)}, & \text{nếu } \Delta y < -3 \\
+            \text{Stationary (Đứng yên)}, & \text{nếu } -3 \le \Delta y \le 3 
+        \end{cases}
+    \end{equation}
+    
+    \item[\textbf{b)}] \textbf{Độ lớn vận tốc và Phân cấp nguy hiểm (\textit{Speed Estimation}):} Vận tốc dịch chuyển pixel tổng hợp ($v$) được tính bằng mô-đun toán học:
+    \begin{equation}
+        v = \sqrt{(\Delta x)^2 + (\Delta y)^2}
+    \end{equation}
+    
+    Trong đó, $v$ biểu thị độ lớn vận tốc vector dịch chuyển tổng hợp của đối tượng trên mặt phẳng ảnh hai chiều. Giá trị này được đưa qua hàm ánh xạ tuyến tính chặn trên để chuẩn hóa về dải điểm số nguy hiểm $[0.1, 1.0]$ tương ứng với các phân cấp: \textit{đứng yên} ($v < 3$), \textit{di chuyển chậm} ($v < 10$), \textit{di chuyển vừa} ($v < 25$) và \textit{di chuyển nhanh} ($v \ge 25$).
+\end{itemize}
+
+Mô hình toán học thu gọn này giúp chuyển đổi các tọa độ pixel thuần túy thành các thông tin ngữ cảnh động có ý nghĩa ngữ nghĩa, làm tiền đề trực tiếp cho hệ thống phân tích nguy hiểm ra quyết định phát âm thanh cảnh báo chính xác cho người khiếm thị.
+\subsection{Phương pháp ước tính chiều sâu và phân vùng khoảng cách}
+
+Để cung cấp thông tin khoảng cách vật lý của các chướng ngại vật phía trước người khiếm thị mà không cần sử dụng hệ thống camera dòng kép (\textit{Stereo Camera}) phức tạp, hệ thống tích hợp module ước tính chiều sâu đơn mục dựa trên kiến trúc mạng học sâu MiDAS, kết hợp giải pháp dự phòng hình học không gian \cite{Reference11}.
+
+\subsubsection*{1. Cơ chế nội suy và chuẩn hóa bản đồ chiều sâu MiDAS}
+
+Mô hình mạng \textit{MiDAS\_small} nhận đầu vào là khung hình đã tiền xử lý và trả về ma trận dự đoán độ phân giải thấp \cite{Reference11}. Để đồng bộ ma trận này về đúng kích thước gốc của ảnh nguồn phục vụ cho việc cắt vùng chướng ngại vật, hệ thống áp dụng thuật toán nội suy đa khối (\textit{Bicubic Interpolation}) dạng liên tục:
+
+\begin{equation}
+    D_{\text{raw}} = \text{Interpolate}\left(\text{MiDAS}(I), \, \text{size}=(H, W), \, \text{mode}=\text{'bicubic'}\right)
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $D_{\text{raw}}$: Ma trận bản đồ chiều sâu thô (\textit{raw depth map}) sau khi khôi phục độ phân giải chuẩn.
+    \item $I$: Khung hình ảnh gốc đầu vào từ luồng camera.
+    \item $\text{MiDAS}(I)$: Bản đồ chiều sâu độ phân giải thấp do mạng nơ-ron sinh ra.
+    \item $H, W$: Chiều cao (\textit{Height}) và chiều rộng (\textit{Width}) nguyên bản của khung hình nguồn.
+\end{itemize}
+
+\textit{*Lưu ý về mặt thuật toán:} Bản chất của phép nội suy đa khối (\textit{Bicubic Interpolation}) là mở rộng kích thước ảnh bằng cách tính toán giá trị pixel mới dựa trên trung bình trọng số của $16$ pixel lân cận ($4 \times 4$) xung quanh điểm ảnh đích. Phép toán này sử dụng các đa thức bậc ba để làm mịn bề mặt chuyển tiếp hình học. So với các kỹ thuật nội suy tuyến tính (\textit{Bilinear}) hay láng giềng gần nhất (\textit{Nearest Neighbor}), phép nội suy đa khối triệt tiêu được hiện tượng răng cưa và mờ nhòe biên cạnh, giúp bảo toàn tính liên tục và độ mịn toán học của các đường biên phân tách chiều sâu vật cản.
+
+Do đầu ra nguyên bản của MiDAS tỷ lệ thuận với thị sai (\textit{Disparity}) — tức các giá trị càng lớn đại diện cho vật thể càng ở gần camera, hệ thống thực hiện chuẩn hóa tuyến tính ma trận đầu ra về dải giá trị xác suất phân phối $[0, 1]$:
+
+\begin{equation}
+    D(y, x) = \frac{D_{\text{raw}}(y, x) - \min(D_{\text{raw}})}{\max(D_{\text{raw}}) - \min(D_{\text{raw}})}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $D(y, x)$: Giá trị chiều sâu đã chuẩn hóa tại tọa độ không gian $(y, x)$, nằm trong khoảng $[0, 1]$.
+    \item $\min(D_{\text{raw}}), \max(D_{\text{raw}})$: Giá trị pixel nhỏ nhất và lớn nhất tìm được trên toàn bộ ma trận chiều sâu thô.
+\end{itemize}
+
+Giá trị $D(y, x) = 1$ biểu thị khoảng cách cực cận (nguy hiểm cao) và $D(y, x) = 0$ biểu thị khoảng cách vô cực (an toàn). Trong trường hợp phần cứng gặp lỗi hoặc thiếu thư viện \textit{PyTorch}, phương pháp tự động kích hoạt cơ chế dự phòng gradient tuyến tính (\textit{Gradient Fallback}) theo trục dọc ảnh:
+
+\begin{equation}
+    D_{\text{fallback}}(y, x) = \frac{y}{H - 1} \quad \forall x \in [0, W-1]
+\end{equation}
+
+Trong đó, $D_{\text{fallback}}(y, x)$ là giá trị chiều sâu giả định tại tọa độ $(y, x)$, phân bổ tăng dần từ đỉnh ảnh ($y=0$, khoảng cách xa) xuống đáy ảnh ($y=H-1$, khoảng cách gần) dựa theo phối cảnh mặt đất tiêu chuẩn.
+
+\subsubsection*{2. Thuật toán trích xuất chiều sâu vùng mục tiêu}
+
+Từ khung bao vị trí của vật thể do YOLO26 cung cấp, $B = [x_1, y_1, x_2, y_2]$, hệ thống tiến hành cắt lát ma trận chiều sâu cục bộ tương ứng với vùng không gian của thực thể:
+
+\begin{equation}
+    R = D[y_1:y_2, \, x_1:x_2]
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $R$: Ma trận con (\textit{sub-matrix}) đại diện cho bản đồ chiều sâu thu hẹp chứa riêng thực thể mục tiêu.
+    \item $x_1, y_1$: Tọa độ điểm góc trên bên trái của khung bao đối tượng mục tiêu.
+    \item $x_2, y_2$: Tọa độ điểm góc dưới bên phải của khung bao đối tượng mục tiêu.
+\end{itemize}
+
+Thay vì lấy giá trị trung bình (\textit{Mean}) dễ bị nhiễu do nền ảnh lọt vào khung bao, hoặc lấy giá trị lớn nhất (\textit{Max}) dễ bị sai lệch do nhiễu pixel đơn lẻ, hệ thống áp dụng hàm thống kê phân vị thứ 80 (\textit{80th Percentile}) để tính toán điểm số khoảng cách đại diện ($S$):
+
+\begin{equation}
+    S = \text{Percentile}(R, \, 80)
+\end{equation}
+
+Trong đó, $S$ là điểm số chiều sâu đại diện duy nhất cho toàn bộ vùng vật cản được trích xuất. Giá trị phân vị này đảm bảo điểm số $S$ phản ánh chính xác bề mặt phân biên gần nhất của vật thể đang hướng về phía người khiếm thị. Điểm số $S$ sau đó được ánh xạ trực tiếp sang các phân vùng nguy hiểm ngữ nghĩa dựa trên hàm điều kiện ngưỡng cố định:
+
+\begin{equation}
+    \text{Zone} = \begin{cases} 
+        \text{Very Close (Rất gần)}, & \text{nếu } S > 0,80 \\
+        \text{Close (Gần)}, & \text{nếu } 0,60 < S \le 0,80 \\
+        \text{Medium (Trung bình)}, & \text{nếu } 0,40 < S \le 0,60 \\
+        \text{Far (Xa)}, & \text{nếu } 0,20 < S \le 0,40 \\
+        \text{Very Far (Rất xa)}, & \text{nếu } S \le 0,20
+    \end{cases}
+\end{equation}
+
+\subsubsection*{3. Cơ chế ước tính khoảng cách hình học dự phòng}
+
+Trong các kịch bản môi trường quá tối hoặc kiến trúc phần cứng giới hạn năng lực tính toán của mạng nơ-ron, hệ thống chuyển đổi sang mô hình ước tính khoảng cách hình học dựa trên tỷ lệ diện tích khung bao (\textit{Bounding Box Area Ratio}). Quy luật vật lý giả định rằng vật thể có diện tích chiếm quyền sở hữu khung hình càng lớn thì khoảng cách thực tế đến camera càng gần:
+
+\begin{equation}
+    \text{Ratio} = \frac{(x_2 - x_1) \times (y_2 - y_1)}{W \times H}
+\end{equation}
+
+Trong đó, $\text{Ratio}$ là tỷ số diện tích bề mặt của hộp bao đối tượng so với tổng diện tích không gian hiển thị của một khung hình ảnh đầy đủ.
+
+Hàm ánh xạ phi tuyến từ tỷ lệ diện tích sang điểm số chiều sâu dự phòng ($S_{\text{geom}}$) được thiết lập dạng hàm từng khúc theo cấu hình thực nghiệm:
+
+\begin{equation}
+    S_{\text{geom}} = \begin{cases} 
+        0,90, & \text{nếu } \text{Ratio} > 0,25 \implies \text{Very Close} \\
+        0,70, & \text{nếu } 0,12 < \text{Ratio} \le 0,25 \implies \text{Close} \\
+        0,50, & \text{nếu } 0,05 < \text{Ratio} \le 0,12 \implies \text{Medium} \\
+        0,25, & \text{nếu } 0,01 < \text{Ratio} \le 0,05 \implies \text{Far} \\
+        0,10, & \text{nếu } \text{Ratio} \le 0,01 \implies \text{Very Far}
+    \end{cases}
+\end{equation}
+
+Trong đó, $S_{\text{geom}}$ đại diện cho điểm số chiều sâu tính toán bằng hình học tĩnh. Sự kết hợp song song giữa bản đồ chiều sâu học sâu MiDAS và mô hình hình học dự phòng giúp hệ thống duy trì khả năng nhận biết cự ly vật cản liên tục, đảm bảo tính an toàn tối đa cho người khiếm thị trong mọi tình huống vận hành.
+
+\subsection{Phương pháp tổng hợp ngôn ngữ và cơ chế dự phòng đa tầng}
+
+Để chuyển đổi các kết quả phân tích ngữ cảnh số liệu (từ YOLO26, ByteTrack và MiDAS) thành thông báo tiếng nói trực quan cho người khiếm thị, hệ thống triển khai một công cụ tổng hợp ngôn ngữ đa nền tảng (\textit{TTSEngine}). Công cụ này tích hợp cơ chế đồng bộ hóa mã băm, sinh sẵn dữ liệu khởi động và tự động chuyển đổi dự phòng ngoại tuyến nhằm triệt tiêu độ trễ mạng và đảm bảo an toàn tối đa cho người dùng trong mọi điều kiện môi trường.
+
+\subsubsection*{1. Cơ chế băm MD5 và quản lý bộ nhớ đệm cục bộ}
+
+Để tối ưu hóa thời gian phản hồi thời gian thực, phương pháp ngăn chặn việc lặp lại các chu kỳ yêu cầu API trực tuyến bằng cách xây dựng một kiến trúc bộ đệm lưu trữ tệp âm thanh (\textit{Audio Disk Caching}). Khi nhận chuỗi văn bản cảnh báo $T$, hệ thống thực hiện mã hóa chuỗi bằng thuật toán ký số MD5 (\textit{Message-Digest Algorithm 5}) để sinh ra một chuỗi định danh duy nhất dài $14$ ký tự:
+
+\begin{equation}
+    K = \text{SubStr}\Big(\text{MD5}\big(\text{Encode}(T)\big), \, 0, \, 14\Big)
+\end{equation}
+
+Tên tệp tin âm thanh tương ứng được định nghĩa cố định trong không gian lưu trữ:
+
+\begin{equation}
+    \text{Filename} = \text{"tts\_"} + K + \text{".mp3"}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $T$: Chuỗi văn bản tiếng Việt cần tổng hợp tiếng nói (Ví dụ: "Chú ý! Phát hiện vật thể phía trước.").
+    \item $\text{MD5}$: Hàm toán học băm chuỗi văn bản thành chuỗi thập lục phân 128-bit.
+    \item $K$: Khóa băm rút gọn ($14$ ký tự đầu) đại diện duy nhất cho nội dung văn bản nhằm tối ưu hóa tốc độ tìm kiếm tệp tin.
+\end{itemize}
+
+\subsubsection*{2. Thuật toán sinh sẵn cảnh báo phân cấp nguy hiểm}
+
+Nhằm loại bỏ hoàn toàn độ trễ khởi tạo trong quá trình di chuyển, hệ thống áp dụng phương pháp sinh sẵn dữ liệu (\textit{Data Pregeneration}) ngay tại thời điểm khởi động (\textit{Startup}).
+
+\begin{equation}
+    f(L) = \begin{cases} 
+        \text{"Đường đi an toàn. Không có nguy hiểm."}, & \text{nếu } L = \text{LOW} \\
+        \text{"Chú ý! Phát hiện vật thể phía trước."}, & \text{nếu } L = \text{MEDIUM} \\
+        \text{"Cảnh báo nguy hiểm! Có phương tiện đang tiến gần."}, & \text{nếu } L = \text{HIGH} \\
+        \text{"Khẩn cấp! Nguy hiểm nghiêm trọng. Dừng ngay!"}, & \text{nếu } L = \text{CRITICAL} \\
+    \end{cases}
+\end{equation}
+
+Toàn bộ các chuỗi văn bản $f(L)$ này được chuyển qua hàm sinh âm thanh mẫu và lưu sẵn vào ổ đĩa trước khi luồng camera hoạt động. Khi mô hình phân tích đưa ra mức độ cảnh báo, hệ thống chỉ cần trỏ trực tiếp đến tệp tin cấu hình sẵn, đưa độ trễ xử lý âm thanh về mức tuyệt đối $\Delta t_{\text{synth}} = 0 \text{ ms}$.
+
+\subsubsection*{3. Kiến trúc dự phòng đa tầng gTTS và eSpeak-ng Ngoại tuyến}
+
+Đối với các câu thoại biến đổi linh hoạt (không nằm trong tập sinh sẵn), hệ thống thiết lập một quy trình xử lý dự phòng hai giai đoạn liên tục (\textit{Multi-backend Fallback Architecture}) nhằm đối phó với sự cố mất kết nối mạng Internet toàn phần:
+
+\begin{enumerate}
+    \item \textbf{Tầng ưu tiên 1 (Trực tuyến - gTTS Backend):} Hệ thống gửi chuỗi $T$ lên máy chủ điện toán đám mây Google thông qua thư viện \textit{gTTS \cite{Reference13}}. Chất lượng âm thanh tự nhiên của mô hình sóng âm WaveNet được ưu tiên để người khiếm thị dễ nghe nhất. Điều kiện chấp nhận tệp âm thanh là dung lượng tệp tải về phải đạt tiêu chuẩn kích thước thực tế:
+    \begin{equation}
+        \text{Size}_{\text{gTTS}} > 1000 \text{ Bytes}
+    \end{equation}
+    
+    \item \textbf{Tầng ưu tiên 2 (Ngoại tuyến - eSpeak-ng/pyttsx3 Backend):} Nếu kết nối mạng bị gián đoạn (gTTS trả về lỗi ngoại lệ hoặc tệp tin rỗng), hệ thống ngay lập tức kích hoạt bộ tổng hợp cục bộ ngoại tuyến \textit{pyttsx3} kết hợp bộ máy ngôn ngữ \textit{eSpeak-ng} \cite{Reference13}. Hệ thống cấu hình tần số giọng nói tiếng Việt chuẩn hóa ($\text{Rate} = 145 \text{ từ/phút}$) và mức âm lượng tối đa ($\text{Volume} = 1.0$). Tiến trình sinh tệp âm thanh dạng sóng được biểu diễn:
+    \begin{equation}
+        T \xrightarrow{\text{pyttsx3}} \text{Audio}_{\text{WAV}} \xrightarrow{\text{FFmpeg}} \text{Audio}_{\text{MP3}}
+    \end{equation}
+\end{enumerate}
+
+Tệp dữ liệu âm thanh dạng sóng (\textit{.wav}) sinh ra từ lõi máy được chuyển đổi tự động sang định dạng nén (\textit{.mp3}) thông qua bộ công cụ dòng lệnh \textit{FFmpeg} với tần số lấy mẫu chuẩn hóa $22050 \text{ Hz}$ và luồng đơn kênh (\textit{Mono Channel}) để đồng bộ tuyệt đối với hệ thống phát. Sự liên kết chặt chẽ giữa hai tầng trực tuyến và ngoại tuyến này đảm bảo thiết bị hỗ trợ người khiếm thị hoạt động bền bỉ, không bị ngắt quãng tín hiệu cảnh báo ngay cả khi đi vào vùng mất sóng hoặc các khu vực hầm sâu.

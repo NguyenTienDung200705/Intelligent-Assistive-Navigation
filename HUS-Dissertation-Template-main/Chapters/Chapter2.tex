@@ -12,28 +12,29 @@
 \renewcommand{\option}[1]{\texttt{\itshape#1}}
 \setcounter{secnumdepth}{3} 
 
+
 \section{Mô hình phát hiện đối tượng YOLO}
 
-YOLO là 1 từ viết tắt cho ‘You only look once’ (Bạn chỉ nhìn một lần) là một thuật toán phát hiện đối tượng chia hình ảnh thành một hệ thống lưới. Mỗi ô trong lưới chịu trách nhiệm phát hiện các đối tượng trong chính nó. YOLO là một trong những thuật toán phát hiện đối tượng nổi tiếng nhất do tốc độ và độ chính xác của nó. 
+YOLO là 1 từ viết tắt cho ‘You only look once’ (Bạn chỉ nhìn một lần) là một thuật toán phát hiện đối tượng chia hình ảnh thành một hệ thống lưới \cite{Reference14}. Mỗi ô trong lưới chịu trách nhiệm phát hiện các đối tượng trong chính nó. YOLO là một trong những thuật toán phát hiện đối tượng nổi tiếng nhất do tốc độ và độ chính xác của nó. 
 
-YOLO là một mô hình mạng CNN cho việc phát hiện, nhận dạng, phân loại đối tượng. YOLO được tạo ra từ việc kết hợp giữa các convolutional layers và connected layers. Trong đó các convolutional layers sẽ trích xuất ra các feature của ảnh, còn fullconnected layers sẽ dự đoán ra xác suất đó và tọa độ của đối tượng.
+YOLO là một mô hình mạng CNN cho việc phát hiện, nhận dạng, phân loại đối tượng. YOLO được tạo ra từ việc kết hợp giữa các convolutional layers và connected layers \cite{Reference14}. Trong đó các convolutional layers sẽ trích xuất ra các feature của ảnh, còn fullconnected layers sẽ dự đoán ra xác suất đó và tọa độ của đối tượng.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{Figures/Chapter 2/Chapter3_2.png}
-    \caption{Mô hình mạng CNN được sử dụng trong YOLO}
+    \caption{Mô hình mạng CNN được sử dụng trong YOLO ~\cite{Reference15}}
     \label{yolo:chapter2}
 \end{figure}
 
 Hình ảnh đầu vào sẽ được chia thành một lưới kích thước $S \times S$, trong đó mỗi ô lưới chịu trách nhiệm phát hiện các đối tượng có tâm nằm trong ô đó. Đối với mỗi ô, mô hình sẽ dự đoán một số lượng bounding box cùng với thông tin về vị trí và xác suất lớp.
 
-Với mỗi bounding box, mô hình dự đoán 5 tham số bao gồm $(x, y, w, h, confidence)$. Trong đó, $(x, y)$ là tọa độ tâm của bounding box tương đối so với ô lưới, còn $(w, h)$ là chiều rộng và chiều cao được chuẩn hóa theo kích thước toàn ảnh. Giá trị $confidence$ thể hiện mức độ tin cậy của bounding box, được tính dựa trên xác suất tồn tại đối tượng và độ chồng lắp giữa bounding box dự đoán và ground truth.
+Với mỗi bounding box, mô hình dự đoán 5 tham số bao gồm $(x, y, w, h, confidence)$. Trong đó, $(x, y)$ là tọa độ tâm của bounding box tương đối so với ô lưới, còn $(w, h)$ là chiều rộng và chiều cao được chuẩn hóa theo kích thước toàn ảnh. Giá trị $confidence$ thể hiện mức độ tin cậy của bounding box, được tính dựa trên xác suất tồn tại đối tượng và độ chồng lắp giữa bounding box dự đoán và ground truth. Ngoài ra, mỗi ô lưới còn dự đoán xác suất thuộc về các lớp đối tượng dưới dạng $Pr(Class_i \mid Object)$. Xác suất cuối cùng của một lớp được tính bằng cách kết hợp giữa xác suất lớp và $confidence$ của bounding box \cite{Reference15}.
 
-Ngoài ra, mỗi ô lưới còn dự đoán xác suất thuộc về các lớp đối tượng dưới dạng $Pr(Class_i \mid Object)$. Xác suất cuối cùng của một lớp được tính bằng cách kết hợp giữa xác suất lớp và $confidence$ của bounding box.
+Qua nhiều thế hệ cải tiến, kiến trúc YOLO liên tục được tinh chỉnh theo hai hướng: trích xuất đặc trưng đa tỉ lệ (từ YOLOv3 với FPN đến các mô-đun C3, C2f, C3k2 ở các phiên bản sau) và phương pháp gán nhãn, từ neo cố định (\textit{anchor-based}) sang không neo (\textit{anchor-free}) với chiến lược gán nhãn động TAL (\textit{Task-Aligned Learning}) từ YOLOv8 trở đi.
 
 \subsection{Mô hình YOLO26}
 
-YOLO26 (hay YOLOv26) là thế hệ mới nhất thuộc họ mô hình phát hiện đối tượng You Only Look Once (YOLO) do Ultralytics phát triển, được giới thiệu vào khoảng cuối năm 2025. Khác với các phiên bản trước chủ yếu tập trung vào việc gia tăng độ chính xác thông qua việc mở rộng kích thước mô hình, YOLO26 được thiết kế lại nhằm tối ưu hóa cho việc triển khai trên các thiết bị biên (edge devices), hệ thống nhúng và môi trường có tài nguyên hạn chế.
+YOLO26 là thế hệ mới nhất thuộc họ mô hình phát hiện đối tượng You Only Look Once (YOLO) do Ultralytics phát triển, được giới thiệu vào khoảng cuối năm 2025 \cite{Reference3}. Khác với các phiên bản trước chủ yếu tập trung vào việc gia tăng độ chính xác thông qua việc mở rộng kích thước mô hình, YOLO26 được thiết kế lại nhằm tối ưu hóa cho việc triển khai trên các thiết bị biên (edge devices), hệ thống nhúng và môi trường có tài nguyên hạn chế.
 
 \begin{figure}[H]
     \centering
@@ -45,14 +46,14 @@ YOLO26 (hay YOLOv26) là thế hệ mới nhất thuộc họ mô hình phát hi
 
 \subsubsection*{1. Kiến trúc NMS-Free}
 
-Các phiên bản YOLO trước đây (như YOLOv8, YOLOv9) yêu cầu bước hậu xử lý Non-Maximum Suppression (NMS) để loại bỏ các bounding box trùng lặp. Tuy nhiên, YOLO26 được thiết kế theo hướng end-to-end hoàn chỉnh, cho phép mô hình trực tiếp xuất ra các dự đoán cuối cùng mà không cần áp dụng NMS.
+Các phiên bản YOLO trước đây (như YOLOv8, YOLOv9) yêu cầu bước hậu xử lý Non-Maximum Suppression (NMS) để loại bỏ các bounding box trùng lặp. Tuy nhiên, YOLO26 được thiết kế theo hướng end-to-end hoàn chỉnh, cho phép mô hình trực tiếp xuất ra các dự đoán cuối cùng mà không cần áp dụng NMS \cite{Reference3}.
 
 Việc loại bỏ bước NMS giúp giảm độ trễ của toàn hệ thống và đơn giản hóa pipeline suy luận, đặc biệt phù hợp với các ứng dụng thời gian thực.
 
 \begin{figure}[H]
     \centering
     \includegraphics[height=5cm, keepaspectratio]{Figures/Chapter 2/Chapter2_4.png}
-    \caption{Kiến trúc NMS-Free}
+    \caption{Kiến trúc NMS-Free ~\cite{Reference3}}
     \label{NMS:chapter2}
 \end{figure}
 
@@ -60,42 +61,178 @@ Việc loại bỏ bước NMS giúp giảm độ trễ của toàn hệ thống
 
 Trong các phiên bản trước, Distribution Focal Loss (DFL) được sử dụng để cải thiện độ chính xác của bounding box. Tuy nhiên, DFL gây khó khăn trong việc chuyển đổi mô hình sang các định dạng triển khai như TensorRT, ONNX hay CoreML.
 
-YOLO26 loại bỏ hoàn toàn DFL, giúp quá trình export và triển khai mô hình trở nên đơn giản, ổn định và tương thích tốt hơn với phần cứng.
+YOLO26 loại bỏ hoàn toàn DFL, giúp quá trình export và triển khai mô hình trở nên đơn giản, ổn định và tương thích tốt hơn với phần cứng \cite{Reference3}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[height=5cm, keepaspectratio]{Figures/Chapter 2/Chapter2_5.png}
-    \caption{Loại bỏ DFL}
+    \caption{Loại bỏ DFL ~\cite{Reference3}}
     \label{DFL:chapter2}
 \end{figure}
 
 \subsubsection*{3. Tối ưu phát hiện vật thể nhỏ}
 
-YOLO26 áp dụng cơ chế gán nhãn mới mang tên Small-Target-Aware Label Assignment (STAL), kết hợp với hàm mất mát cải tiến. Cơ chế này giúp mô hình nhạy hơn với các vật thể nhỏ hoặc ở khoảng cách xa.
+YOLO26 áp dụng cơ chế gán nhãn mới mang tên Small-Target-Aware Label Assignment (STAL), kết hợp với hàm mất mát cải tiến. Cơ chế này giúp mô hình nhạy hơn với các vật thể nhỏ hoặc ở khoảng cách xa \cite{Reference3}.
 
 Nhờ đó, hiệu năng phát hiện các đối tượng nhỏ như biển số xe hoặc chi tiết chữ viết tay được cải thiện đáng kể so với các phiên bản trước.
 
 \begin{figure}[H]
     \centering
     \includegraphics[height=5cm, keepaspectratio]{Figures/Chapter 2/Chapter2_6.png}
-    \caption{Tối ưu cho vật thể nhỏ}
+    \caption{Tối ưu cho vật thể nhỏ ~\cite{Reference3}}
     \label{STAL:chapter2}
 \end{figure}
 
 
 \subsubsection*{4. Trình tối ưu hóa MuSGD}
 
-YOLO26 sử dụng trình tối ưu hóa MuSGD, kết hợp giữa Stochastic Gradient Descent (SGD) và thuật toán Muon. Phương pháp này giúp cải thiện tốc độ hội tụ và đảm bảo sự ổn định trong quá trình huấn luyện.
+YOLO26 sử dụng trình tối ưu hóa MuSGD, kết hợp giữa Stochastic Gradient Descent (SGD) và thuật toán Muon. Phương pháp này giúp cải thiện tốc độ hội tụ và đảm bảo sự ổn định trong quá trình huấn luyện \cite{Reference3}.
 
 Việc áp dụng MuSGD cho phép mô hình đạt hiệu năng cao mà vẫn duy trì độ ổn định khi huấn luyện trên các tập dữ liệu lớn.
 
 \begin{figure}[H]
     \centering
     \includegraphics[height=5cm, keepaspectratio]{Figures/Chapter 2/Chapter2_7.png}
-    \caption{Tối ưu hóa MuSGD}
+    \caption{Tối ưu hóa MuSGD ~\cite{Reference3}}
     \label{MuSGD:chapter2}
 \end{figure}
 
 Nhờ đó, YOLO26 có thể được sử dụng như một nền tảng thống nhất cho nhiều ứng dụng khác nhau trong thị giác máy tính.
 
-\section{}
+\section{Multi-Object Tracking}
+Trong lĩnh vực thị giác máy tính, bài toán theo dõi đa đối tượng (\textit{Multi-Object Tracking} - MOT) đóng vai trò cốt lõi trong các ứng dụng giám sát video, phân tích hành vi và xe tự hành \cite{Reference12}. Nghiên cứu này tiếp cận bài toán theo mô hình "Theo dõi thông qua phát hiện" (\textit{Tracking-by-Detection}). Quy trình này bắt đầu bằng việc sử dụng một mạng nơ-ron chuyên biệt để phát hiện và xác định vị trí các hộp bao của đối tượng trong từng khung hình độc lập, sau đó áp dụng một thuật toán liên kết dữ liệu nhằm kết nối các hộp bao này qua chuỗi thời gian để tạo thành các quỹ đạo chuyển động nhất quán.
+
+\subsection{Phương pháp Centroid Tracking}
+Phương pháp này lựa chọn phát triển mô-đun theo dõi đối tượng dựa trên phương pháp Centroid Tracking (bám vết theo tâm hình học) \cite{Reference16}. Đây là một hướng tiếp cận nhẹ, tận dụng đặc tính liên tục của chuyển động trong chuỗi video, theo đó vị trí của cùng một đối tượng giữa hai khung hình liên tiếp chỉ thay đổi trong một phạm vi nhỏ khi tốc độ khung hình đủ cao.
+
+Khác với các phương pháp theo dõi hiện đại sử dụng mạng học sâu để trích xuất đặc trưng và thực hiện liên kết dữ liệu (data association), giải pháp đề xuất loại bỏ hoàn toàn các mô hình học sâu ở tầng theo dõi nhằm giảm thiểu chi phí tính toán. Thay vào đó, quá trình gán định danh và duy trì quỹ đạo được thực hiện thông qua các phép toán hình học đơn giản trên mặt phẳng ảnh, dựa trực tiếp vào tọa độ pixel của tâm đối tượng được phát hiện từ camera.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Figures/Chapter 2/Chapter2_10.png}
+    \caption{Kiến trúc Centroid Tracking.}
+    \label{fig:Centroid_Tracking}
+\end{figure}
+
+Nhờ cấu trúc thuật toán tinh gọn, phương pháp không chỉ đảm bảo khả năng theo dõi thời gian thực mà còn phù hợp với các nền tảng phần cứng nhúng có tài nguyên hạn chế. Luồng xử lý chi tiết cùng kiến trúc phân cấp chức năng của mô-đun theo dõi được trình bày trong Hình \ref{fig:Centroid_Tracking}.
+
+\textbf{1. Detection:} Chuỗi khung hình video đầu vào (\textit{Input Video Sequence}) được xử lý bởi mạng YOLO26 để trích xuất ra thông tin vị trí hộp bao (\textit{BBox}) và nhãn phân lớp (\textit{Class}) của các chướng ngại vật xung quanh người khiếm thị \cite{Reference3}. Toàn bộ tập hợp dữ liệu này tạo thành mảng đầu vào \textit{detections} sẵn sàng cung cấp cho module theo dõi tâm đối tượng.
+
+\textbf{2. Centroid Calculation and Association:} Phương pháp tiến hành thu hẹp thông tin bằng cách tính toán tọa độ điểm tâm (\textit{Centroid}) của từng hộp bao \cite{Reference16}. Tại mỗi khung hình hiện tại, một ma trận chi phí được thiết lập dựa trên khoảng cách Euclide tuyến tính giữa tập hợp các tâm đối tượng đang quản lý trong bộ nhớ và các tâm mới xuất hiện:
+\begin{equation}
+d = \sqrt{(x_{\text{object}} - x_{\text{input}})^2 + (y_{\text{object}} - y_{\text{input}})^2}
+\end{equation}
+Thuật toán áp dụng chiến lược gán cặp láng giềng gần nhất để liên kết các đối tượng, với điều kiện khoảng cách phải nhỏ hơn ngưỡng giới hạn không gian hình học $max\_distance = 120.0$ pixel nhằm triệt tiêu các liên kết sai lệch từ vùng nền nhiễu.
+
+\textbf{3. Track Management:} Điều khiển vòng đời của các đối tượng dựa trên trạng thái xuất hiện. Những hộp bao mới không trùng khớp với dữ liệu cũ được khởi tạo một mã định danh duy nhất (\textit{Track ID}). Ngược lại, những đối tượng bị mất dấu tạm thời do vật cản che khuất sẽ được tích lũy biến đếm vắng mặt $disappeared$. Nếu vượt quá ngưỡng sinh tồn $max\_disappeared = 30$ khung hình, đối tượng sẽ bị xóa hoàn toàn khỏi bộ nhớ đệm để giải phóng tài nguyên.
+
+Việc lựa chọn kiến trúc bám vết dựa trên tâm hình học tinh gọn này mang lại một lợi thế thực tiễn quan trọng. Bằng cách loại bỏ hoàn toàn khối trích xuất đặc trưng ngoại quan cồng kềnh hay các phép suy diễn phức tạp từ các mô hình AI khác ở tầng liên kết, phương pháp đã giảm thiểu tối đa độ trễ thuật toán cục bộ, ngăn chặn hiện tượng trễ tích lũy xuyên suốt pipeline, từ đó đảm bảo các lệnh thoại cảnh báo an toàn.
+
+\section{MIDAS}
+
+\subsection{Bài toán ước lượng độ sâu}
+Uớc lượng độ sâu từ một ảnh duy nhất (Monocular Depth Estimation) là một bài toán nền tảng nhưng chứa đựng tính nghịch đảo cao (ill-posed problem), do một hình ảnh hai chiều có thể được tạo ra từ vô số cấu trúc ba chiều khác nhau trong không gian thực \cite{Reference11}. Sự phát triển của các kiến trúc học sâu đã mở ra khả năng giải quyết bài toán này bằng cách huấn luyện các mạng nơ-ron hàm ý nhận diện các dấu hiệu phối cảnh, cấu trúc hình học và phân phối ánh sáng. Tuy nhiên, một rào cản lớn đối với các mô hình ước lượng độ sâu hiện đại là khả năng tổng quát hóa kém (generalization capability). Phần lớn các mạng nơ-ron khi được huấn luyện trên một tập dữ liệu cụ thể thường có xu hướng học thuộc lòng các đặc trưng phân phối và cấu hình nội tại của camera thuộc tập dữ liệu đó (chẳng hạn như bối cảnh không gian trong nhà của NYU Depth-v2 \cite{Reference17} hoặc bối cảnh giao thông của KITTI \cite{Reference18}). Khi áp dụng trực tiếp vào các môi trường mới lạ hoàn toàn mà không trải qua quá trình tinh chỉnh (Zero-shot transfer), các mô hình này thường cho ra kết quả dự đoán sai lệch nghiêm trọng.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=5.5cm, keepaspectratio]{Figures/Chapter 2/Chapter2_2.png}
+    \caption{Hình ảnh minh họa \cite{Reference11}}
+    \label{minimidas:chapter1}
+\end{figure}
+
+Động lực cốt lõi của nghiên cứu MiDaS xuất phát từ nhận định rằng nguyên nhân chính hạn chế khả năng tổng quát hóa của mô hình không nằm ở năng lực của kiến trúc mạng, mà phụ thuộc vào quy mô và tính đa dạng của dữ liệu huấn luyện. Để xây dựng một mô hình có độ bền vững cao (robust) trong mọi điều kiện thực tế, giải pháp tối ưu là phải thực hiện huấn luyện đồng thời trên nhiều nguồn dữ liệu khác nhau. Mặc dù vậy, việc kết hợp trực tiếp các tập dữ liệu độ sâu lại đối mặt với những thách thức kỹ thuật rất lớn do sự không tương thích về mặt biểu diễn toán học.
+
+Để giải quyết triệt để bài toán đồng hóa dữ liệu phức tạp này, thuật toán MiDaS đã đề xuất một phương pháp luận đột phá. Thay vì cố gắng ép buộc các tập dữ liệu tuân theo một quy chuẩn vật lý tuyệt đối, thiết kế một hàm mất mát mới có khả năng thích ứng linh hoạt với các biểu diễn độ sâu khác nhau thông qua việc triệt tiêu hoàn toàn các yếu tố về tỷ lệ (scale) và độ dịch chuyển (shift). Sự ra đời của MiDaS đã thiết lập một tiêu chuẩn mới cho bài toán ước lượng độ sâu đơn sắc, cho phép khai thác triệt để thế mạnh phối hợp của nhiều tập dữ liệu quy mô lớn nhằm tạo ra một mô hình có khả năng dự đoán độ sâu ổn định, chính xác trong các môi trường thực tế ngẫu nhiên mà không cần điều chỉnh lại tham số mạng.
+
+\subsection{Kiến trúc tổng quan của mô hình MiDaS}
+Kiến trúc tổng quan của MiDaS được xây dựng dựa trên nguyên lý của các mạng nơ-ron học sâu tích chập cấu trúc cao cấp, áp dụng mô hình mã hóa - giải mã (Encoder-Decoder) kết hợp với các kết nối tắt (skip connections) nhằm tối ưu hóa việc trích xuất và khôi phục đặc trưng đa quy mô \cite{Reference11}. Ở nhánh mã hóa, MiDaS được thiết kế để có thể linh hoạt tích hợp các mạng backbone mạnh mẽ như ResNet, ResNeXt, hoặc các cấu trúc Transformer thị giác (Vision Transformer - ViT) trong các phiên bản nâng cấp. Nhánh mã hóa đóng vai trò trích xuất các đặc trưng ngữ cảnh mang tính toàn cục (global context) và cấu trúc hình học thô của bức ảnh, giúp mạng nơ-ron hiểu được mối quan hệ không gian tổng thể giữa các thực thể và nền cảnh, bất kể hình ảnh thuộc miền dữ liệu nào.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=5.5cm, keepaspectratio]{Figures/Chapter 2/Chapter2_1.png}
+    \caption{Kiến trúc mô hình MIDAS ~\cite{Reference11}}
+    \label{midas:chapter1}
+\end{figure}
+
+Hình \ref{midas:chapter1} tại nhánh giải mã, mô hình áp dụng cấu trúc mạng tinh chỉnh đa quy mô 
+(Multi-Scale Refinement Network) dựa trên chuỗi các khối tinh chỉnh liền kề 
+(\text{RefineBlock}) nhằm khôi phục từng bước độ phân giải không gian của bản đồ độ sâu đầu ra. Do đặc trưng trích xuất từ các tầng mạng EfficientNet ($\text{Eff-Net}$) mang các kích thước hình học khác nhau, chúng được đưa qua các lớp tích chập hai chiều ($\text{Conv2D}$) tương ứng để đồng bộ hóa số lượng kênh (channels). Quá trình này giúp chuẩn hóa dữ liệu trước khi nạp vào nhánh giải mã qua các đường kết nối tắt (skip connections) \cite{Reference19}.
+
+Luồng xử lý tại bộ giải mã được thực hiện theo cơ chế liên kết ngược, 
+bắt đầu từ tầng sâu nhất là $\text{RefineBlock}_1$ (nhận đặc trưng từ cụm lớp $\text{Eff-Net}[5:9]$). Thông tin ngữ cảnh cao cấp từ khối phía trước sẽ được truyền ngược theo chiều ngang sang khối tiếp theo ($\text{RefineBlock}_2 \rightarrow \text{RefineBlock}_4$), đồng thời tích hợp trực tiếp với các thông tin biên cạnh sắc nét từ tầng nông đi xuống từ các khối $\text{Conv2D}$ thông qua phép toán cộng hợp nhất $\oplus$. Sự kết hợp đa quy mô này cho phép mạng nơ-ron liên tục bù đắp lượng thông tin không gian bị hao hụt trong quá trình mã hóa tích chập.
+
+Ở giai đoạn cuối cùng, đặc trưng tổng hợp từ $\text{RefineBlock}_4$ được chuyển qua một khối tích chập kết thúc ($\text{ConvBlock}$) để tinh chỉnh và làm mịn bề mặt. Cơ chế này đảm bảo rằng bản đồ độ sâu dự đoán đầu ra ($\text{Output Depth}$) không chỉ phản ánh chính xác xu hướng phân phối khoảng cách cấu trúc ba chiều tổng thể, mà còn duy trì được độ tách biệt rõ ràng tại ranh giới của các đối tượng, giảm thiểu hiện tượng mờ nhòe hoặc lem biên tại vùng chuyển tiếp giữa tiền cảnh và hậu cảnh.
+
+\section{gTTS}
+
+\subsection{Khái niệm}
+gTTS (Google Text-to-Speech) là một thư viện mã nguồn mở dành cho ngôn ngữ lập trình Python, đồng thời tích hợp công cụ giao diện dòng lệnh (CLI). Công cụ này đóng vai trò như một cầu nối trung gian, cho phép các ứng dụng giao tiếp trực tiếp với giao diện lập trình ứng dụng dịch thuật của Google (Google Translate's Text-to-Speech API). Nhiệm vụ cốt lõi của gTTS là thực hiện quá trình chuyển đổi các chuỗi văn bản viết thành dữ liệu âm thanh nói một cách tự động và thông minh. Kết quả đầu ra của quá trình xử lý này thường được trích xuất và lưu trữ dưới định dạng tệp tin âm thanh tiêu chuẩn .mp3, hoặc được truyền dẫn trực tiếp vào các luồng xử lý dữ liệu nhị phân (byte stream) nhằm phục vụ cho các ứng dụng đa phương tiện tương tác theo thời gian thực.
+
+\subsection{Cơ chế hoạt động}
+Cơ chế vận hành của thư viện gTTS tuân thủ chặt chẽ theo mô hình Client-Server dựa trên giao thức HTTP truyền thống thông qua môi trường mạng Internet. Quy trình xử lý toàn diện được diễn ra qua bốn giai đoạn tuần tự. 
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    block/.style={
+        rectangle, 
+        draw=blue!70!black, 
+        fill=blue!5, 
+        rounded corners,
+        minimum width=3.2cm, 
+        minimum height=1.3cm, 
+        text centered, 
+        text width=3cm,
+        font=\small\bfseries
+    },
+    arrow/.style={
+        -{Stealth[scale=1.2]}, 
+        line width=1.2pt, 
+        draw=gray!80!black
+    },
+    txt/.style={
+        font=\scriptsize\itshape, 
+        text centered, 
+        text width=2.8cm
+    }
+]
+
+    % Định vị các khối hàng ngang
+    \node (input)  [block, draw=orange!60!black, fill=orange!10] {Dữ liệu Văn bản\\(Input Text)};
+    \node (gtts)   [block, right=2.5cm of input, draw=purple!60!black, fill=purple!5] {Thư viện gTTS\\(Client-side)};
+    \node (server) [block, right=2.5cm of gtts, draw=cyan!60!black, fill=cyan!5] {Google Translate\\TTS API Server};
+    
+    % Khối Output nằm dưới khối gTTS
+    \node (output) [block, below=2.3cm of gtts, draw=green!60!black, fill=green!10] {Tệp Âm thanh\\(Output .mp3)};
+
+    % Luồng tương tác song song (Gửi đi và Trả về giữa gTTS và Server)
+    \draw [arrow] (input) -- node[above, txt] {Cung cấp văn bản} (gtts);
+    
+    % Mũi tên gửi Request đi (đường cong nhẹ lên trên để tách biệt)
+    \draw [arrow] (gtts.north east) .. controls +(0.5,0.4) and +(-0.5,0.4) .. node[above, txt] {Gửi HTTP Request} (server.north west);
+    
+    % Mũi tên nhận Response về (đường cong nhẹ xuống dưới)
+    \draw [arrow] (server.south west) .. controls +(-0.5,-0.4) and +(0.5,-0.4) .. node[below, txt] {Trả về Audio stream} (gtts.south east);
+    
+    % Sau khi nhận xong, gTTS tiến hành ghi dữ liệu xuống file
+    \draw [arrow] (gtts) -- node[left, txt, align=right, xshift=-0.2cm] {Ghi dữ liệu} (output);
+
+\end{tikzpicture}
+\caption{Sơ đồ khối cơ chế hoạt động của hệ thống gTTS}
+\label{fig:gtts_architecture}
+\end{figure}
+
+Đầu tiên là giai đoạn khởi tạo dữ liệu, trong đó ứng dụng phía người dùng (Client) sẽ chuẩn bị chuỗi văn bản cần chuyển đổi, đồng thời thiết lập các thông số cấu hình đi kèm bao gồm mã ngôn ngữ định dạng và tốc độ phát âm mong muốn. 
+
+Tiếp theo, ở giai đoạn phân đoạn và gửi yêu cầu, thư viện gTTS sẽ tự động tính toán và phân tách các đoạn văn bản dài thành các chuỗi ký tự ngắn hơn dựa trên hệ thống dấu câu thực tế. Cơ chế này giúp đảm bảo dữ liệu truyền đi không vượt quá giới hạn độ dài ký tự nghiêm ngặt do API miễn phí của Google quy định. Sau khi hoàn tất đóng gói, gTTS gửi một yêu cầu HTTP POST hoặc GET trực tiếp đến máy chủ Google Translate.
+
+Giai đoạn thứ ba diễn ra hoàn toàn tại phía máy chủ (Server-side). Hệ thống đám mây của Google sau khi tiếp nhận yêu cầu sẽ áp dụng các thuật toán Học máy tiên tiến cùng công nghệ Xử lý ngôn ngữ tự nhiên (NLP) để phân tích sâu cú pháp văn bản, xác định trọng âm, thiết lập ngữ điệu phù hợp và tổng hợp thành một luồng âm thanh kỹ thuật số hoàn chỉnh. 
+
+Cuối cùng, tại giai đoạn nhận kết quả, máy chủ gửi phản hồi chứa luồng âm thanh đã được mã hóa về lại cho Client. Thư viện gTTS tiếp nhận luồng dữ liệu này, tiến hành giải mã và thực thi việc ghi trực tiếp vào bộ nhớ tạm hoặc xuất ra thành tệp tin âm thanh vật lý trên hệ thống.
+
+\subsection{Các tính năng chính của thư viện}
+Thư viện gTTS sở hữu nhiều tính năng vượt trội, mang lại khả năng ứng dụng cao trong các dự án phần mềm. Tính năng nổi bật nhất là việc hỗ trợ kho tàng đa ngôn ngữ vô cùng phong phú. Nhờ thừa hưởng cơ sở dữ liệu toàn cầu từ Google Translate, gTTS có khả năng chuyển đổi hơn 100 ngôn ngữ khác nhau, đồng thời hỗ trợ nhận diện và phát âm chính xác theo từng biến thể giọng địa phương đặc trưng của cùng một ngôn ngữ. 
+
+Bên cạnh đó, thư viện còn tích hợp sẵn cơ chế phân tách văn bản thông minh, tự động ngắt câu dựa trên logic ngữ pháp để đảm bảo luồng âm thanh đầu ra liên tục, không bị đứt gãy đột ngột và tối ưu hóa tối đa băng thông truyền tải. Người dùng cũng có thể linh hoạt điều chỉnh tốc độ đọc thông qua các tham số cấu hình hệ thống, cho phép hạ thấp tốc độ phát âm nhằm phục vụ tối ưu cho các ứng dụng giáo dục hoặc hỗ trợ học ngoại ngữ. 
+
+Đặc biệt, gTTS mang tính tinh gọn cao khi cho phép triển khai hoàn toàn miễn phí mà không yêu cầu người phát triển phải thiết lập tài khoản Cloud phức tạp, không cần cấu hình các khóa bảo mật API khắt khe hay chịu bất kỳ ràng buộc nào về chi phí duy trì hàng tháng.
